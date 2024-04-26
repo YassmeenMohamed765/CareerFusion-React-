@@ -1,0 +1,37 @@
+/* UserHome.css */
+.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+  }
+  
+  footer {
+    background-color: #f2f2f2;
+    padding: 25px;
+  }
+  .custom-navbar {
+    background-color: #7A5AC9;
+  }
+  .custom-nav .nav-link {
+    color: white;
+    font-size: 19px;
+  }
+  .custom-brand {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .custom-nav {
+    margin-left: auto;
+  }
+  .custom-link {
+    margin-right: 20px;
+  }
+  .jumbotronn {
+    background-color: lightgray;
+  }
+  .jumbotronn {
+    width: 100%; /* Set the width to 100% */
+    padding: 2rem 0; /* Add some padding */
+    margin-bottom: 0; /* Remove margin bottom */
+  }
+  

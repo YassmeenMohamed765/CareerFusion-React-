@@ -1,0 +1,16 @@
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background:#D7D1EE;
+}
+.btn-block {
+background-color:#7A5AC9;
+}
+.btn-block:hover {
+    background-color:#28246c;
+}
+/* #7A5AC9 */
+/* #6C63FF */
+/* #D7D1EE */
