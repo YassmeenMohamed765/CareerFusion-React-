@@ -3,6 +3,7 @@ import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import './UserHome.css';
 import SearchPage from './SearchPage'; 
 import RecommendedJobsPage from './RecommendedJobsPage';
+import OpenPositionsPage from './OpenPositionsPage';
 const UserHomeee = () => {
   return (
     <div>
@@ -31,6 +32,8 @@ const UserHomeee = () => {
           
         </Container>
       </div>
+      
+      <OpenPositionsPage />
       <RecommendedJobsPage />
       <footer className="footer mt-auto py-3">
         <Container>

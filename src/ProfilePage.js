@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Import Axios at the top
 import './styles.css';
 import Navbar from "./Navbar";
-const BACKEND_BASE_URL = "https://jobcareer.azurewebsites.net";
+const BACKEND_BASE_URL = "http://localhost:5266";
+// const BACKEND_BASE_URL = "https://jobcareer.azurewebsites.net";
 const ProfilePage = () => {
   const [profile, setProfile] = useState({
     title: '',

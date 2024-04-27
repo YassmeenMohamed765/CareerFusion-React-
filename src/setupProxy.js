@@ -19,7 +19,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'https://jobcareer.azurewebsites.net',
+      target: 'http://localhost:5266',
       changeOrigin: true,
     })
   );
