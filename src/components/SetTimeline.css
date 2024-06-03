@@ -1,0 +1,75 @@
+html, body, #root {
+    height: 100%;
+    margin: 0;
+}
+
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    width: 25%;
+}
+
+.content {
+    margin-left: 25%;
+    padding: 20px;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.title {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    background: linear-gradient(45deg, #7C5ACB, #DED8F3);
+    
+}
+
+.custom-button {
+    background-color:rgba(124, 90, 203, 1);
+    border-color: rgba(222, 216, 243, 1);
+}
+
+.form-field {
+    background-color: #e8eaf6;
+    border-color: #5c6bc0;
+    color: #3f51b5;
+}
+
+
+
+.section-title span {
+    color:rgba(124, 90, 203, 1);
+    font-weight: bold;
+}
+
+.section-content {
+    padding: 10px;
+    background-color: #fff;
+}
+
+.hidden {
+    display: none;
+}
+
+
+.timeline-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.message-box {
+    background-color: #5c6bc0;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}

@@ -24,6 +24,7 @@ import JobDetails from './jobDetails';
 import HrProfileDisplay from './HrProfileDisplay';
 import HRProfilePage from './HRProfilePage';
 import UserHomeee from './components/UserHomeee';
+import SetTimeline from './components/SetTimeline';
 
 
 
@@ -50,7 +51,7 @@ const App = () => {
         <Route path='/adminP' element={<AdminPage />} />
         <Route path='/hiringPlan' element={<HiringPlanPage />} />
         <Route path='/define-needs' element={<DefineNeedsPage />} />
-        <Route path='/setTimeline' element={<SetTimelinePage />} />
+        <Route path='/setTimeline' element={<SetTimeline />} />
         <Route path='/openPositions' element={<OpenPositionsPage />} />
         <Route path='/job/:userId/:jobId' element={<JobDetails />} />
         <Route path='/profileviewhr' element={<HrProfileDisplay/>}/>
