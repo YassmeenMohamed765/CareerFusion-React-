@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Card, Form, Button, Nav } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Button, Image } from 'react-bootstrap';
 import './profile.css';
 const BACKEND_BASE_URL = "http://localhost:5266";
 
@@ -18,7 +18,7 @@ const HrProfile = () => {
     try {
       const response = await axios.get(`/api/UserProfile/${userId}`);
       const { title, description, address, fullName } = response.data;
-  
+
       setProfile(prevState => ({
         ...prevState,
         title: title || '',
@@ -49,7 +49,7 @@ const HrProfile = () => {
 
   const isFullyQualifiedUrl = (url) => {
     return url.startsWith('http://') || url.startsWith('https://');
-  }
+  };
 
   const handlePhotoChange = async (event) => {
     if (event.target.files[0]) {
@@ -111,39 +111,37 @@ const HrProfile = () => {
 
   return (
     <div>
-      
       <Container className="mt-4">
         <Row>
           <Col xl={4}>
             <Card className="mb-4 mb-xl-0">
               <Card.Header>Profile Picture</Card.Header>
               <Card.Body className="text-center">
-                <img
+                <Image
                   className="img-account-profile rounded-circle mb-2"
                   src={profile.photo ? `${profile.photo}?${new Date().getTime()}` : 'http://bootdey.com/img/Content/avatar/avatar1.png'}
+                  roundedCircle
                   alt="Profile"
                 />
-                <div className="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                <Form.Group>
-                  <Form.Control type="file" onChange={handlePhotoChange} />
+                <Form.Group className="mb-3">
+                  <Form.Control type="file" onChange={handlePhotoChange} style={{ display: 'none' }} id="photo-upload" />
+                  <Button
+                    variant="primary"
+                    onClick={() => document.getElementById('photo-upload').click()}
+                    style={{ backgroundColor: '#7A5AC9', borderColor: '#7A5AC9' }}
+                  >
+                    Upload Picture
+                  </Button>
                 </Form.Group>
+                {profile.fullName && <div className="profile-fullName">{profile.fullName}</div>}
               </Card.Body>
             </Card>
           </Col>
           <Col xl={8}>
             <Card className="mb-4">
-              <Card.Header>Profile Details</Card.Header>
+              <Card.Header>Account Details</Card.Header>
               <Card.Body>
                 <Form>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Username (how your name will appear to other users on the site)</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter your username"
-                      value={profile.fullName}
-                      readOnly
-                    />
-                  </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>Job/Career</Form.Label>
                     <Form.Control
@@ -166,7 +164,7 @@ const HrProfile = () => {
                     <Form.Label>Address</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Your address"
+                      placeholder="Enter Your Address"
                       value={profile.address}
                       onChange={handleTextChange('address')}
                     />
