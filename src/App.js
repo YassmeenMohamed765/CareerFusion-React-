@@ -17,7 +17,7 @@ import HiringPlanPage from './hiringPlan';
 import UserProfileDisplay from './UserProfileDisplay';
 import AdminPage from './admin';
 import DefineNeedsPage from './DefineNeedsPage';
-// import SetTimelinePage from './SetTimeline';
+import SetTimelinePage from './SetTimeline';
 import AdminLogin from './components/adminLogin';
 import OpenPositionsPage from './openPositions';
 import JobDetails from './jobDetails';
