@@ -17,7 +17,7 @@ import HiringPlanPage from './hiringPlan';
 import UserProfileDisplay from './UserProfileDisplay';
 import AdminPage from './admin';
 import DefineNeedsPage from './DefineNeedsPage';
-import SetTimelinePage from './SetTimeline';
+// import SetTimelinePage from './SetTimeline';
 import AdminLogin from './components/adminLogin';
 import OpenPositionsPage from './openPositions';
 import JobDetails from './jobDetails';
@@ -26,8 +26,7 @@ import HRProfilePage from './HRProfilePage';
 import UserHomeee from './components/UserHomeee';
 import SetTimeline from './components/SetTimeline';
 import HrProfile from './components/HrProfile';
-
-
+import HrProfileView from './components/HrProfileView';
 
 
 
@@ -58,6 +57,7 @@ const App = () => {
         <Route path='/profileviewhr' element={<HrProfileDisplay/>}/>
         <Route path='/profilehr' element={<HRProfilePage/>}/>
         <Route path='/hrprofile' element={<HrProfile/>}/>
+        <Route path='/hrprofileview' element={<HrProfileView/>}/>
 
 
 

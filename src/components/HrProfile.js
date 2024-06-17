@@ -119,7 +119,7 @@ const HrProfile = () => {
               <Card.Body className="text-center">
                 <Image
                   className="img-account-profile rounded-circle mb-2"
-                  src={profile.photo ? `${profile.photo}?${new Date().getTime()}` : 'http://bootdey.com/img/Content/avatar/avatar1.png'}
+                  src={profile.photo ? `${profile.photo}?${new Date().getTime()}` : 'https://via.placeholder.com/150'}
                   roundedCircle
                   alt="Profile"
                 />
