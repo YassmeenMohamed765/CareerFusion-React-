@@ -70,26 +70,26 @@ const HrProfileView = () => {
           </Col>
           <Col xl={8}>
             <Card className="mb-4">
-            <Card.Header>Account Details</Card.Header>
+              <Card.Header>Account Details</Card.Header>
               <Card.Body>
                 <Row className="mb-3">
                   <Col sm={3}><strong>Full Name</strong></Col>
-                  <Col sm={9}><p className="text-muted mb-0">{profile.fullName}</p></Col>
+                  <Col sm={9}><p className="text-muted mb-0">{profile.fullName || 'No full name yet'}</p></Col>
                 </Row>
                 <hr />
                 <Row className="mb-3">
-                  <Col sm={3}><strong>Job/Career</strong></Col>
-                  <Col sm={9}><p className="text-muted mb-0">{profile.title}</p></Col>
+                  <Col sm={3}><strong>Title</strong></Col>
+                  <Col sm={9}><p className="text-muted mb-0">{profile.title || 'No title yet'}</p></Col>
                 </Row>
                 <hr />
                 <Row className="mb-3">
                   <Col sm={3}><strong>Description</strong></Col>
-                  <Col sm={9}><p className="text-muted mb-0">{profile.description}</p></Col>
+                  <Col sm={9}><p className="text-muted mb-0">{profile.description || 'No description yet'}</p></Col>
                 </Row>
                 <hr />
                 <Row className="mb-3">
                   <Col sm={3}><strong>Address</strong></Col>
-                  <Col sm={9}><p className="text-muted mb-0">{profile.address}</p></Col>
+                  <Col sm={9}><p className="text-muted mb-0">{profile.address || 'No address yet'}</p></Col>
                 </Row>
                 <Button
                   type="button"
@@ -106,5 +106,4 @@ const HrProfileView = () => {
     </div>
   );
 };
-
 export default HrProfileView;
