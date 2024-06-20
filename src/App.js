@@ -27,8 +27,9 @@ import UserHomeee from './components/UserHomeee';
 import SetTimeline from './components/SetTimeline';
 import HrProfile from './components/HrProfile';
 import HrProfileView from './components/HrProfileView';
-import PostForm from './components/PostForm';
-
+// import PostForm from './components/PostForm';
+import Post from './components/Post';
+import PostView from './components/PostView';
 
 
 const App = () => {
@@ -59,7 +60,10 @@ const App = () => {
         <Route path='/profilehr' element={<HRProfilePage/>}/>
         <Route path='/hrprofile' element={<HrProfile/>}/>
         <Route path='/hrprofileview' element={<HrProfileView/>}/>
-        <Route path='/postform'element={<PostForm/>}/>
+        {/* <Route path='/postform'element={<PostForm/>}/> */}
+        <Route path='/post'element={<Post/>}/>
+        <Route path='/postview' element={<PostView/>}/>
+
         
 
 

@@ -1,77 +1,88 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Image, Card } from 'react-bootstrap';
+import { FaImage } from 'react-icons/fa';
 import axios from 'axios';
+import './post.css';
 
 const PageForm = () => {
   const [content, setContent] = useState('');
+  const [imagePreview, setImagePreview] = useState(null);
 
   const handleContentChange = (e) => {
     setContent(e.target.value);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImagePreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Retrieve the userId and auth token from localStorage
     const userId = localStorage.getItem('userId');
   
-    // Check if userId is available
     if (!userId) {
       window.alert('User is not logged in!');
       return;
     }
 
     try {
-      // Make the API call to add the post
       const response = await axios.post(`/api/Post/add/${userId}`, {
         content,
         userId
-      }
-      );
+      });
 
-      // Check if the post creation was successful
       if (response.status === 201) {
-        // Post created successfully, handle success (e.g., show a message, clear the form, etc.)
-        console.log('Post created successfully:', response.data);
         window.alert('Post created successfully!');
-        setContent(''); // Clear the content field
+        setContent('');
+        setImagePreview(null);
       } else {
-        // Handle unsuccessful post creation
         console.error('Failed to create post:', response.data);
       }
     } catch (error) {
-      // Handle network or other errors
       console.error('Error during post creation:', error);
       window.alert('An error occurred while creating the post. Please try again later.');
     }
   };
 
   return (
-    <Container className="d-flex flex-column align-items-center" style={{ marginTop: '50px' }}>
+    <Container className="d-flex flex-column align-items-center mt-4">
       <Row className="justify-content-center w-100">
-        <Col md="8" className="d-flex flex-column align-items-center">
-          <h2>Write a Post</h2>
-          <Form onSubmit={handleSubmit} className="w-100">
-            <Form.Group controlId="formContent">
-              <Form.Label>Post Content</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={5}
-                value={content}
-                onChange={handleContentChange}
-                placeholder="Write your post here..." 
-              />
-            </Form.Group>
-            <Form.Group className='mb-3' controlId="formFile">
-              <Form.Label>Upload Picture or File</Form.Label>
-              <Form.Control type="file"  />
-            </Form.Group>
-            <div className="d-flex justify-content-center">
-              <Button type="submit" className='btn-lg btn-block mb-2'>
-                Submit
-              </Button>
-            </div>
-          </Form>
+        <Col md="8">
+          <Card className="p-4" style={{ borderRadius: '10px' }}>
+            <Card.Body>
+              <Card.Title className="text-center mb-3">Write Post!</Card.Title>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="formContent" className="position-relative mb-3">
+                  <Form.Control
+                    as="textarea"
+                    rows={4}
+                    value={content}
+                    onChange={handleContentChange}
+                    placeholder="Hi, what's on your mind today?"
+                    className="bg-light"
+                    style={{ padding: '15px 20px', borderRadius: '10px', color: '#616161', fontSize: '16px', letterSpacing: '1px', height: '150px' }}
+                  />
+                  <FaImage
+                    style={{ position: 'absolute', bottom: '10px', right: '10px', cursor: 'pointer', color: '#757575', fontSize: '30px' }}
+                    onClick={() => document.getElementById('fileInput').click()}
+                  />
+                  <Form.Control type="file" id="fileInput" style={{ display: 'none' }} onChange={handleImageChange} />
+                </Form.Group>
+                {imagePreview && (
+                  <div className="mb-3 text-center">
+                    <Image src={imagePreview} alt="Selected Image" thumbnail style={{ Width: '100%', height: 'auto', maxHeight: '500px' }} />
+                  </div>
+                )}
+                <div className="d-flex justify-content-center">
+                  <Button type="submit" className="btn-block" style={{ borderRadius: '20px', padding: '10px 30px' }}>
+                    Post
+                  </Button>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
     </Container>
