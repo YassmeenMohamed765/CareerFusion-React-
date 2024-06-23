@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Alert, Modal } from 'react-bootstrap';
 import axios from 'axios';
-import { FaPlus } from 'react-icons/fa'; // Importing the FaPlus icon
-import { Link } from 'react-router-dom';
-import  PageForm from './Post';
+import { FaPlus } from 'react-icons/fa'; 
+import { Link, useNavigate } from 'react-router-dom';
+import PageForm from './Post';
+import './post.css'; // Import the custom CSS
 
-const PostsPage = () => {
+const PostView = () => {
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -26,19 +28,40 @@ const PostsPage = () => {
 
   const formatDateTime = (dateString) => {
     const options = {
-      year: 'numeric', month: 'long', day: 'numeric',
-      hour: 'numeric', minute: 'numeric', second: 'numeric',
-      hour12: true
+      year: 'numeric', month: 'long', day: 'numeric'
     };
     return new Date(dateString).toLocaleString('en-US', options);
   };
 
+  const truncateContent = (content, postId) => {
+    const maxLength = 39; 
+    if (content.length <= maxLength) {
+      return content;
+    }
+    return (
+      <>
+        {content.slice(0, maxLength)}...
+        <Link to={`/posts/${postId}`} className="text-primary">
+          see more
+        </Link>
+      </>
+    );
+  };
+
+  const addNewPost = (newPost) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
+
+  const handleCardClick = (postId) => {
+    navigate(`/posts/${postId}`);
+  };
+
   return (
     <Container className="mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Posts</h2>
+      <div className="d-flex justify-content-between align-items-center mb3">
+        <h2>Your Posts</h2>
         <Button variant="primary" className="btn-block" onClick={() => setShowModal(true)}>
-          <FaPlus /> Write Post {/* Using FaPlus icon */}
+          <FaPlus /> Write Post 
         </Button>
       </div>
       {posts.length === 0 ? (
@@ -47,19 +70,20 @@ const PostsPage = () => {
         <Row>
           {posts.map((post) => (
             <Col key={post.postId} md={6} lg={4} className="mb-4">
-              <Card>
+              <Card className="custom-card" onClick={() => handleCardClick(post.postId)}>
                 <Card.Img
                   variant="top"
-                  src={post.picture || "https://placehold.it/150x80?text=IMAGE"}
+                  src={post.picture || process.env.PUBLIC_URL + '/images/post.jpeg'}
+                  className="custom-card-img"
                   alt="Post image"
                 />
-                <Card.Body>
-                  <Card.Text>{post.content}</Card.Text>
-                  <Button variant="primary" className='btn-block' as={Link} to={`/posts/${post.postId}`}>
+                <Card.Body className="custom-card-body">
+                  <Card.Text>{truncateContent(post.content, post.postId)}</Card.Text>
+                  <Button variant="primary" className="btn-block" as={Link} to={`/posts/${post.postId}`}>
                     View
                   </Button>
                 </Card.Body>
-                <Card.Footer>
+                <Card.Footer className="custom-card-footer">
                   <small className="text-muted">
                     {formatDateTime(post.createdAt)}
                   </small>
@@ -70,17 +94,16 @@ const PostsPage = () => {
         </Row>
       )}
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} scrollable>
+      <Modal show={showModal} onHide={() => setShowModal(false)} scrollable size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Write Post</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* Ensure PageForm is correctly imported */}
-          <PageForm />
+          <PageForm addNewPost={addNewPost} closeModal={() => setShowModal(false)} />
         </Modal.Body>
       </Modal>
     </Container>
   );
 };
 
-export default PostsPage;
+export default PostView;

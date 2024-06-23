@@ -30,6 +30,7 @@ import HrProfileView from './components/HrProfileView';
 // import PostForm from './components/PostForm';
 import Post from './components/Post';
 import PostView from './components/PostView';
+import PostDetail from './components/PostDetail'; 
 
 
 const App = () => {
@@ -63,6 +64,7 @@ const App = () => {
         {/* <Route path='/postform'element={<PostForm/>}/> */}
         <Route path='/post'element={<Post/>}/>
         <Route path='/postview' element={<PostView/>}/>
+        <Route path='/posts/:postId' element={<PostDetail />} /> {/* New Route for PostDetail */}
 
         
 
