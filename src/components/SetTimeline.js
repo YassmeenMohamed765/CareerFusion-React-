@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './SetTimeline.css';
+import Navbar from "./Navbar";
 
 function NewSetTimeline() {
     const [description, setDescription] = useState('');
@@ -140,6 +141,7 @@ function NewSetTimeline() {
 
     return (
        <Container fluid>
+            <Navbar userType="hr" />
             <Row>
                 <Col md={3} className="bg-light p-3">
                     <h1 className='title'>Set Timeline</h1>

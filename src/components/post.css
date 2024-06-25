@@ -1,0 +1,55 @@
+body {
+    color: #000;
+    overflow-x: hidden;
+    height: 100%;
+
+    background-repeat: no-repeat;
+}
+
+textarea {
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    color: #616161;
+    border: 1px solid #F5F5F5;
+    font-size: 16px;
+    letter-spacing: 1px;
+    width: 200%;
+    height: 150px !important;
+}
+/* Custom CSS for consistent card dimensions */
+.custom-card {
+    height: 100%; /* Ensure cards take full height of the column */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .custom-card-img {
+    height: 200px; /* Set a fixed height for images */
+    object-fit: cover; /* Ensure images cover the area without distortion */
+  }
+  
+  .custom-card-body {
+    flex-grow: 1; /* Allow the body to grow and fill the available space */
+    overflow: hidden; /* Hide overflowing content */
+  }
+  
+  .custom-card-footer {
+    text-align: center;
+  }
+  
+
+/* PostDetail.css */
+.custom-checkbox .form-check-input {
+  background-color: #343a40; /* Darker color */
+  border-color: #343a40;
+}
+
+.custom-checkbox .form-check-input:checked {
+  background-color: #23272b; /* Darker color when checked */
+  border-color: #23272b;
+}
+
+.custom-checkbox .form-check-label {
+  margin-left: 0.5rem;
+}
