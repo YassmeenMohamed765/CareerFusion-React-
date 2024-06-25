@@ -1,5 +1,5 @@
 /* UserHome.css */
-.navbar {
+/*.navbar {
   margin-bottom: 0;
   border-radius: 0;
 }
@@ -31,6 +31,5 @@ footer {
 }
 .jumbotronn {
   width: 100%; /* Set the width to 100% */
-  padding: 2rem 0; /* Add some padding */
-  margin-bottom: 0; /* Remove margin bottom */
-}
+ /* padding: 2rem 0; /* Add some padding */
+ /* margin-bottom: 0; /* Remove margin bottom */

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Card, Form, Button, Row, Col } from 'react-bootstrap';
+import Navbar from './Navbar'
 
 
 const DefineNeeds = () => {
@@ -79,14 +80,12 @@ const DefineNeeds = () => {
     
       return (
         <div style={{ 
-          backgroundImage: './img/homeBackground.jpeg', 
-          backgroundSize: 'cover', 
-          backgroundPosition: 'center', 
           padding: '20px', 
           height: '100vh' 
         }}>
     
           <Container>
+          <Navbar userType="hr" />
             <Card style={{ backgroundColor: '#DED8F3', padding: '20px', borderRadius: '10px' }}>
               <Card.Header style={{ textAlign: 'center', backgroundColor: '#7C5ACB', color: 'white' }}>
                 <h1>Define Needs</h1>

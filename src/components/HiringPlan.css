@@ -1,0 +1,12 @@
+.hiring-plan-content {
+    background-color: #F2F2F2;
+    min-height: 100vh;
+    padding-top: 20px;
+    margin: 0; /* Ensure no extra margin */
+  }
+
+  .card-header {
+    margin: 0; /* Remove any default margin */
+    padding: 0; /* Remove any default padding */
+  }
+  
