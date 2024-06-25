@@ -13,7 +13,7 @@ import HrHomePage from './HrHomePage';
 import RoleSelectionPage from './components/RoleSelectionPage';
 import ApplicationPage from './ApplicationPage';
 import ProfilePage from './ProfilePage';
-import HiringPlanPage from './hiringPlan';
+import HiringPlan from './components/HiringPlan';
 import UserProfileDisplay from './UserProfileDisplay';
 import AdminPage from './admin';
 import DefineNeedsPage from './components/DefineNeeds';
@@ -52,7 +52,7 @@ const App = () => {
         <Route path='/profile' element={<ProfilePage/>}/>
         <Route path='/profileview' element={<UserProfileDisplay/>}/>
         <Route path='/adminP' element={<AdminPage />} />
-        <Route path='/hiringPlan' element={<HiringPlanPage />} />
+        <Route path='/hiringPlan' element={<HiringPlan />} />
         <Route path='/define-needs' element={<DefineNeedsPage />} />
         <Route path='/setTimeline' element={<SetTimeline />} />
         <Route path='/openPositions' element={<OpenPositionsPage />} />
