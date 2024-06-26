@@ -80,7 +80,7 @@ const DefineNeeds = () => {
     
       return (
         <div style={{ 
-          padding: '20px', 
+          padding: '40px', 
           height: '100vh' 
         }}>
     

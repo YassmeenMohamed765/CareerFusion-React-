@@ -7,19 +7,21 @@ import './Navbar.css'; // Import the CSS file
 
 const CustomNavbar = ({ userType }) => {
   const location = useLocation();
+  
+  const isHiringPlanActive = ['/setTimeline', '/define-needs', '/openPositions', '/write-post', '/existing-cvs'].includes(location.pathname);
 
   return (
     <Navbar expand="lg" className="custom-navbar fixed-top">
       <Container>
         <Navbar.Brand href="/" className="custom-brand">
-            <i className="fa-solid fa-people-arrows" style={{ color: '#4655f7' }}></i> CareerFusion 
+          <i className="fa-solid fa-people-arrows" style={{ color: '#4655f7' }}></i> CareerFusion
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto custom-nav">
             {userType === 'hr' && (
               <Nav.Link as={NavLink} to="/hrHome" className="custom-link" activeClassName="active">
-                 Home
+                Home
               </Nav.Link>
             )}
             {userType === 'candidate' && (
@@ -42,9 +44,25 @@ const CustomNavbar = ({ userType }) => {
                 <Nav.Link as={NavLink} to="/profileviewhr" className="custom-link" activeClassName="active">
                   My Profile
                 </Nav.Link>
-                <Nav.Link as={NavLink} to="/hiringPlan" className="custom-link" activeClassName="active">
-                  Hiring Plan
-                </Nav.Link>
+                <NavDropdown title="Hiring Plan" id="hiring-plan-dropdown" className={`custom-link ${isHiringPlanActive ? 'active' : ''}`}>
+                  <NavDropdown.Item as={NavLink} to="/setTimeline">
+                    Set Timeline
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as={NavLink} to="/define-needs">
+                    Define Needs
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={NavLink} to="/openPositions">
+                    Open Positions
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as={NavLink} to="/post">
+                    Write Post
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={NavLink} to="/existing-cvs">
+                    Existing CVs
+                  </NavDropdown.Item>
+                </NavDropdown>
                 <Nav.Link as={NavLink} to="/recruitment" className="custom-link" activeClassName="active">
                   Recruitment
                 </Nav.Link>
