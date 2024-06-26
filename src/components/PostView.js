@@ -5,6 +5,7 @@ import { FaPlus } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import PageForm from './Post';
 import './post.css'; // Import the custom CSS
+import Navbar from "./Navbar";
 
 const PostView = () => {
   const [posts, setPosts] = useState([]);
@@ -15,7 +16,7 @@ const PostView = () => {
     const fetchPosts = async () => {
       try {
         const userId = localStorage.getItem('userId');
-        const response = await axios.get(`/api/Post/HrPost/${userId}`);
+        const response = await axios.get(`http://localhost:5266/api/Post/HrPost/${userId}`);
         const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setPosts(sortedPosts);
       } catch (error) {
@@ -57,7 +58,9 @@ const PostView = () => {
   };
 
   return (
+    
     <Container className="mt-4">
+      <Navbar userType="hr" />
       <div className="d-flex justify-content-between align-items-center mb3">
         <h2>Your Posts</h2>
         <Button variant="primary" className="btn-block" onClick={() => setShowModal(true)}>

@@ -22,7 +22,7 @@ const handleLogin = async (e) => {
 
   try {
     // Make the API call
-    const response = await axios.post('/api/Auth/token', { email, password });
+    const response = await axios.post('http://localhost:5266/api/Auth/token', { email, password });
 
     // Check if the login was successful
     if (response.status === 200) {

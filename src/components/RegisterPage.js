@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,7 +34,7 @@ function RegisterPage() {
     };
 
     try {
-      const response = await fetch('/api/Auth/register', {
+      const response = await fetch('http://localhost:5266/api/Auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,11 +74,9 @@ function RegisterPage() {
       const userData = res.data;
       console.log('Google login successful:', userData);
 
-      // Sanitize username and generate a complex password
       const sanitizedUserName = sanitizeUsername(userData.name);
       const generatedPassword = generatePassword();
 
-      // Send Google user data to backend for registration or login
       const googleRegistrationData = {
         UserName: sanitizedUserName,
         FullName: userData.name,
@@ -86,7 +84,7 @@ function RegisterPage() {
         Password: generatedPassword,
       };
 
-      const response = await fetch('/api/Auth/register', {
+      const response = await fetch('http://localhost:5266/api/Auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

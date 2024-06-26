@@ -28,7 +28,7 @@ const PageForm = () => {
     }
 
     try {
-      const response = await axios.post(`/api/Post/add/${userId}`, {
+      const response = await axios.post('http://localhost:5266/api/Post/add/${userId}', {
         content,
         userId
       });

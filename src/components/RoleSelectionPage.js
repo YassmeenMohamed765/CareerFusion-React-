@@ -17,7 +17,7 @@ function RoleSelectionPage  ()  {
     }
 
     try {
-      const response = await fetch('/api/Auth/addrole', {
+      const response = await fetch('http://localhost:5266/api/Auth/addrole', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

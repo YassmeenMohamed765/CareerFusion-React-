@@ -14,7 +14,7 @@ const PostDetail = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`/api/Post/${postId}`);
+        const response = await axios.get(`http://localhost:5266/api/Post/${postId}`);
         setPost(response.data);
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -23,7 +23,7 @@ const PostDetail = () => {
 
     const fetchCvs = async () => {
       try {
-        const response = await axios.get(`/api/CVUpload/${postId}/cv-paths`);
+        const response = await axios.get(`http://localhost:5266/api/CVUpload/${postId}/cv-paths`);
         setCvs(response.data); // Store CV URLs in state
       } catch (error) {
         console.error('Error fetching CVs:', error);

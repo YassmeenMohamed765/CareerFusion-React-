@@ -56,7 +56,7 @@ const CustomNavbar = ({ userType }) => {
                     Open Positions
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item as={NavLink} to="/post">
+                  <NavDropdown.Item as={NavLink} to="/postview">
                     Write Post
                   </NavDropdown.Item>
                   <NavDropdown.Item as={NavLink} to="/existing-cvs">
