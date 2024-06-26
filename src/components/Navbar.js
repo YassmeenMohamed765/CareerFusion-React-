@@ -8,7 +8,7 @@ import './Navbar.css'; // Import the CSS file
 const CustomNavbar = ({ userType }) => {
   const location = useLocation();
   
-  const isHiringPlanActive = ['/setTimeline', '/define-needs', '/openPositions', '/write-post', '/existing-cvs'].includes(location.pathname);
+  const isHiringPlanActive = ['/setTimeline', '/define-needs', '/openPositions', '/postview', '/existing-cvs'].includes(location.pathname);
 
   return (
     <Navbar expand="lg" className="custom-navbar fixed-top">
@@ -41,7 +41,7 @@ const CustomNavbar = ({ userType }) => {
             )}
             {userType === 'hr' && (
               <>
-                <Nav.Link as={NavLink} to="/profileviewhr" className="custom-link" activeClassName="active">
+                <Nav.Link as={NavLink} to="/hrprofileview" className="custom-link" activeClassName="active">
                   My Profile
                 </Nav.Link>
                 <NavDropdown title="Hiring Plan" id="hiring-plan-dropdown" className={`custom-link ${isHiringPlanActive ? 'active' : ''}`}>

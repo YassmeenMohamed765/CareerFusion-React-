@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Container, Row, Col, Card, Button, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './profile.css';
+import Navbar from "./Navbar";
 const BACKEND_BASE_URL = "http://localhost:5266";
 
 const HrProfileView = () => {
@@ -53,6 +54,7 @@ const HrProfileView = () => {
   return (
     <div>
       <Container className="mt-4">
+      <Navbar userType="hr" />
         <Row>
           <Col xl={4}>
             <Card className="mb-4 mb-xl-0">

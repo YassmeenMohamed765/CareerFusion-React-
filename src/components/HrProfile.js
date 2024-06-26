@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Navbar from "./Navbar";
 import { Container, Row, Col, Card, Form, Button, Image } from 'react-bootstrap';
 import './profile.css';
 const BACKEND_BASE_URL = "http://localhost:5266";
+
 
 const HrProfile = () => {
   const [profile, setProfile] = useState({
@@ -112,6 +114,7 @@ const HrProfile = () => {
   return (
     <div>
       <Container className="mt-4">
+         <Navbar userType="hr" />
         <Row>
           <Col xl={4}>
             <Card className="mb-4 mb-xl-0">
