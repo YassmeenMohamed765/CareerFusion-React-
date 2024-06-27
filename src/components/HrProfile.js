@@ -18,7 +18,7 @@ const HrProfile = () => {
   const fetchUserProfile = async () => {
     const userId = localStorage.getItem('userId');
     try {
-      const response = await axios.get(`/api/UserProfile/${userId}`);
+      const response = await axios.get(`http://localhost:5266/api/UserProfile/${userId}`);
       const { title, description, address, fullName } = response.data;
 
       setProfile(prevState => ({
@@ -29,7 +29,7 @@ const HrProfile = () => {
         fullName: fullName || '',
       }));
 
-      const photoResponse = await axios.get(`/api/UserProfile/${userId}/profile-picture`);
+      const photoResponse = await axios.get(`http://localhost:5266/api/UserProfile/${userId}/profile-picture`);
       if (photoResponse.status === 200 && photoResponse.data.profilePictureUrl) {
         setProfile(prevState => ({
           ...prevState,
@@ -57,7 +57,7 @@ const HrProfile = () => {
     if (event.target.files[0]) {
       const file = event.target.files[0];
       const userId = localStorage.getItem('userId');
-      const uploadUrl = `/api/UserProfile/upload-profile-picture/${userId}`;
+      const uploadUrl = `http://localhost:5266/api/UserProfile/upload-profile-picture/${userId}`;
       
       const formData = new FormData();
       formData.append('profilePicture', file);
@@ -90,7 +90,7 @@ const HrProfile = () => {
 
   const handleSaveProfile = async () => {
     const userId = localStorage.getItem('userId');
-    const updateUrl = `/api/UserProfile/${userId}`;
+    const updateUrl = `http://localhost:5266/api/UserProfile/${userId}`;
     const requestBody = {
       ...(profile.title && { Title: profile.title }),
       ...(profile.description && { Description: profile.description }),

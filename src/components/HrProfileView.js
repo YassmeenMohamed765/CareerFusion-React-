@@ -4,7 +4,7 @@ import { Container, Row, Col, Card, Button, Image } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './profile.css';
 import Navbar from "./Navbar";
-const BACKEND_BASE_URL = "http://localhost:5266";
+// const BACKEND_BASE_URL = "http://localhost:5266";
 
 const HrProfileView = () => {
   const [profile, setProfile] = useState({
@@ -20,7 +20,7 @@ const HrProfileView = () => {
   const fetchUserProfile = async () => {
     const userId = localStorage.getItem('userId');
     try {
-      const response = await axios.get(`/api/UserProfile/${userId}`);
+      const response = await axios.get(`http://localhost:5266/api/UserProfile/${userId}`);
       const { title, description, address, fullName } = response.data;
 
       setProfile({
@@ -31,7 +31,7 @@ const HrProfileView = () => {
         photo: '',
       });
 
-      const photoResponse = await axios.get(`/api/UserProfile/${userId}/profile-picture`);
+      const photoResponse = await axios.get(`http://localhost:5266/api/UserProfile/${userId}/profile-picture`);
       if (photoResponse.status === 200 && photoResponse.data.profilePictureUrl) {
         setProfile(prevState => ({
           ...prevState,
