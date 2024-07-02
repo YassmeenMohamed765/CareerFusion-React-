@@ -31,6 +31,10 @@ import HrProfileView from './components/HrProfileView';
 import Post from './components/Post';
 import PostView from './components/PostView';
 import PostDetail from './components/PostDetail'; 
+import PostRecruitment from './components/PostRecruitment';
+import SidebarLayout from './components/SidebarLayout';
+import TelephoneInterview from './components/TelephoneInterview';
+import AppraisalPage from './components/AppraisalPage';
 
 
 const App = () => {
@@ -64,6 +68,11 @@ const App = () => {
         <Route path='/post'element={<Post/>}/>
         <Route path='/postview' element={<PostView/>}/>
         <Route path='/posts/:postId' element={<PostDetail />} /> {/* New Route for PostDetail */}
+        <Route path='/Recruitment' element={<PostRecruitment/>}/>
+        <Route path='/sidebar' element={<SidebarLayout/>}/>
+        <Route path='/posts/:postId/sidebar' element={<SidebarLayout />} /> {/* New route for SidebarLayout */}
+        <Route path='/TelephoneInterview' element={<TelephoneInterview/>}/>
+        <Route path='/appraisal' element={<AppraisalPage/>}/>
 
         
 

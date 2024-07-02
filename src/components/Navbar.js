@@ -66,6 +66,9 @@ const CustomNavbar = ({ userType }) => {
                 <Nav.Link as={NavLink} to="/recruitment" className="custom-link" activeClassName="active">
                   Recruitment
                 </Nav.Link>
+                <Nav.Link as={NavLink} to="/appraisal" className="custom-link" activeClassName="active">
+                  Appraisal
+                </Nav.Link>
               </>
             )}
             <NavDropdown title="Notifications" id="basic-nav-dropdown">

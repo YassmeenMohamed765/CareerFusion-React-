@@ -9,6 +9,8 @@ import Navbar from "./Navbar";
 
 const PostView = () => {
   const [posts, setPosts] = useState([]);
+  const [postImages, setPostImages] = useState({});
+  const [postFiles, setPostFiles] = useState({});
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
@@ -19,9 +21,46 @@ const PostView = () => {
         const response = await axios.get(`http://localhost:5266/api/Post/HrPost/${userId}`);
         const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setPosts(sortedPosts);
+        await fetchPostResources(sortedPosts);
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
+    };
+
+    const fetchPostResources = async (posts) => {
+      const imagePromises = [];
+      const filePromises = [];
+      const imageMap = {};
+      const fileMap = {};
+
+      posts.forEach(post => {
+        if (post.postPictureIds.length > 0) {
+          post.postPictureIds.forEach(id => {
+            imagePromises.push(
+              axios.get(`http://localhost:5266/api/PictureUpload/${id}/picture-path`).then(response => {
+                imageMap[post.postId] = response.data;
+              }).catch(error => {
+                console.error('Error fetching picture:', error);
+              })
+            );
+          });
+        }
+        if (post.postFileIds.length > 0) {
+          post.postFileIds.forEach(id => {
+            filePromises.push(
+              axios.get(`http://localhost:5266/api/FileUpload/${id}/url`).then(response => {
+                fileMap[post.postId] = response.data;
+              }).catch(error => {
+                console.error('Error fetching file:', error);
+              })
+            );
+          });
+        }
+      });
+
+      await Promise.all([...imagePromises, ...filePromises]);
+      setPostImages(imageMap);
+      setPostFiles(fileMap);
     };
 
     fetchPosts();
@@ -35,7 +74,7 @@ const PostView = () => {
   };
 
   const truncateContent = (content, postId) => {
-    const maxLength = 39; 
+    const maxLength = 50; 
     if (content.length <= maxLength) {
       return content;
     }
@@ -54,15 +93,14 @@ const PostView = () => {
   };
 
   const handleCardClick = (postId) => {
-    navigate(`/posts/${postId}`);
+    navigate(`/posts/${postId}/sidebar`);
   };
 
   return (
-    
     <Container className="mt-4">
       <Navbar userType="hr" />
-      <div className="d-flex justify-content-between align-items-center mb3">
-        <h2>Your Posts</h2>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h3>Your Posts</h3>
         <Button variant="primary" className="btn-block" onClick={() => setShowModal(true)}>
           <FaPlus /> Write Post 
         </Button>
@@ -76,7 +114,7 @@ const PostView = () => {
               <Card className="custom-card" onClick={() => handleCardClick(post.postId)}>
                 <Card.Img
                   variant="top"
-                  src={post.picture || process.env.PUBLIC_URL + '/images/post.jpeg'}
+                  src={postImages[post.postId] || process.env.PUBLIC_URL + '/images/post.jpeg'}
                   className="custom-card-img"
                   alt="Post image"
                 />
