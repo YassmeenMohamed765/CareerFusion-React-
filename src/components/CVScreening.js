@@ -60,9 +60,22 @@ const CVScreening = () => {
       setSelectedFiles([]);
     } catch (error) {
       console.error('Error submitting skills:', error);
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error('Request data:', error.request);
+      } else {
+        // Something else happened while setting up the request
+        console.error('Error message:', error.message);
+      }
+      console.error('Error config:', error.config);
     }
   };
-
+  
   const fetchMatchedCVs = async () => {
     try {
       const response = await axios.get('https://cv-screening.onrender.com/get-matched-cvs');

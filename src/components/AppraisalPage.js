@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, ListGroup, Modal, Form, Alert } from 'react-bootstrap';
 import { FaBullseye, FaQuestion, FaEdit, FaTrash } from 'react-icons/fa';
+import EvaluationForm from './EvaluationForm';
 import axios from 'axios';
+import EmployeesCard from './EmployeesCard';
+import Navbar from "./Navbar";
 
 const AppraisalPage = () => {
   const [goals, setGoals] = useState([]);
@@ -15,7 +18,7 @@ const AppraisalPage = () => {
 
   useEffect(() => {
     const hrUserId = localStorage.getItem('userId');
-    axios.get(`/api/Goals/hruser/${hrUserId}`)
+    axios.get(`http://localhost:5266/api/Goals/hruser/${hrUserId}`)
       .then(response => setGoals(response.data))
       .catch(error => console.error('Error fetching goals:', error));
   }, []);
@@ -50,7 +53,7 @@ const AppraisalPage = () => {
   };
 
   const handleDeleteGoal = () => {
-    axios.delete(`/api/Goals/${selectedGoal.id}`)
+    axios.delete(`http://localhost:5266/api/Goals/${selectedGoal.id}`)
       .then(() => {
         setGoals(goals.filter(goal => goal.id !== selectedGoal.id));
         setShowEditModal(false);
@@ -70,7 +73,7 @@ const AppraisalPage = () => {
       score: parseInt(score, 10),
     };
 
-    axios.put(`/api/Goals/${selectedGoal.id}`, updatedGoalData)
+    axios.put(`http://localhost:5266/api/Goals/${selectedGoal.id}`, updatedGoalData)
       .then(response => {
         setGoals(goals.map(goal => (goal.id === selectedGoal.id ? response.data : goal)));
         setShowEditModal(false);
@@ -84,6 +87,7 @@ const AppraisalPage = () => {
 
   return (
     <Container className="mt-4">
+      <Navbar userType="hr" />
       <Card className="mb-4">
         <Card.Header className="d-flex justify-content-between align-items-center">
           <h5>Goals</h5>
@@ -117,7 +121,7 @@ const AppraisalPage = () => {
                   }}
                 >
                   <span>
-                    {index + 1}- {goal.description} (Score: {goal.score}) <FaQuestion style={{ color: 'red', marginLeft: '8px' }} />
+                    {index + 1}- {goal.description} (Score: {goal.score}) 
                   </span>
                   <div id={`goal-icons-${goal.id}`} style={{ display: 'none' }}>
                     <FaEdit
@@ -134,6 +138,8 @@ const AppraisalPage = () => {
           )}
         </Card.Body>
       </Card>
+      <EvaluationForm />
+      <EmployeesCard />
 
       {/* Add Goal Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
