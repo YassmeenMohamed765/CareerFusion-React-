@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './SetTimeline.css';
 import Navbar from "./Navbar";
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 function NewSetTimeline() {
     const [description, setDescription] = useState('');
@@ -22,7 +23,7 @@ function NewSetTimeline() {
     const fetchTimelines = async () => {
         const userId = localStorage.getItem('userId');
         try {
-            const response = await fetch(`/api/HiringTimeline/GetTimelinesForUser/${userId}`);
+            const response = await fetch(`http://localhost:5266/api/HiringTimeline/GetTimelinesForUser/${userId}`);
             const timelinesData = await response.json();
             setTimelines(timelinesData);
         } catch (error) {
@@ -43,7 +44,7 @@ function NewSetTimeline() {
         };
 
         try {
-            const response = await fetch(`/api/HiringTimeline/SetTimeline/${userId}`, {
+            const response = await fetch(`http://localhost:5266/api/HiringTimeline/SetTimeline/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -75,15 +76,15 @@ function NewSetTimeline() {
     const updateTimeline = async (stageId) => {
         const userId = localStorage.getItem('userId');
         try {
-            const response = await fetch(`/api/HiringTimeline/UpdateTimelineStage/${userId}/${stageId}`, {
+            const response = await fetch(`http://localhost:5266/api/HiringTimeline/UpdateTimelineStage/${userId}/${stageId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     description: updatedTimeline.description,
-                    startTime: startTime,
-                    endTime: endTime
+                    startTime: updatedTimeline.startDate,
+                    endTime: updatedTimeline.endDate
                 })
             });
 
@@ -100,7 +101,7 @@ function NewSetTimeline() {
     const deleteTimeline = async (stageId) => {
         const userId = localStorage.getItem('userId');
         try {
-            const response = await fetch(`/api/HiringTimeline/DeleteTimelineStage/${userId}/${stageId}`, {
+            const response = await fetch(`http://localhost:5266/api/HiringTimeline/DeleteTimelineStage/${userId}/${stageId}`, {
                 method: 'DELETE'
             });
 
@@ -121,14 +122,17 @@ function NewSetTimeline() {
     const handleEditClick = (timelineId) => {
         setEditableTimelineId(timelineId);
         const timelineToEdit = timelines.find(timeline => timeline.stageId === timelineId);
-        const formattedStartDate = new Date(timelineToEdit.startTime).toISOString().split('T')[0];
-        const formattedEndDate = new Date(timelineToEdit.endTime).toISOString().split('T')[0];
+        const formattedStartDate = timelineToEdit.startTime.split('T')[0];
+        const formattedEndDate = timelineToEdit.endTime.split('T')[0];
 
         setUpdatedTimeline({
             description: timelineToEdit.description,
             startDate: formattedStartDate,
             endDate: formattedEndDate
         });
+
+        setStartTime(formattedStartDate);
+        setEndTime(formattedEndDate);
     };
 
     const handleInputChange = (e) => {
@@ -139,8 +143,13 @@ function NewSetTimeline() {
         }));
     };
 
+    const handleSaveClick = (timelineId) => {
+        updateTimeline(timelineId);
+        setEditableTimelineId(null);
+    };
+
     return (
-       <Container fluid>
+        <Container fluid>
             <Navbar userType="hr" />
             <Row>
                 <Col md={3} className="bg-light p-3">
@@ -174,7 +183,7 @@ function NewSetTimeline() {
                                 className='form-field'
                             />
                         </Form.Group>
-                        <Button variant="primary" onClick={addTimeline} className="custom-button mt-3" >
+                        <Button variant="primary" onClick={addTimeline} className="custom-button mt-3">
                             Add Timeline
                         </Button>
                         {showMessage && (
@@ -187,57 +196,64 @@ function NewSetTimeline() {
                 </Col>
                 <Col md={9} className="p-3">
                     <div className="section">
-                        <div className="section-title" onClick={toggleTimelinesVisibility}>
-                            <span>Timelines</span>
-                            <i className={`arrow ${timelinesVisible ? 'down' : 'up'}`}></i>
-                        </div>
+                        <h1 className='timelines-title' onClick={toggleTimelinesVisibility}>
+                            Timelines
+                        </h1>
                         <div className={`section-content ${timelinesVisible ? '' : 'hidden'}`}>
-                            {timelines.map(timeline => (
-                                <div key={timeline.stageId} className="timeline-item p-2 border-bottom">
-                                    {editableTimelineId === timeline.stageId ? (
-                                        <>
-                                            <Form.Control
-                                                type="text"
-                                                name="description"
-                                                value={updatedTimeline.description}
-                                                onChange={handleInputChange}
-                                                className="mb-2"
-                                            />
-                                            <Form.Control
-                                                type="date"
-                                                name="startDate"
-                                                value={startTime}
-                                                onChange={(e) => setStartTime(e.target.value)}
-                                                className="mb-2"
-                                            />
-                                            <Form.Control
-                                                type="date"
-                                                name="endDate"
-                                                value={endTime}
-                                                onChange={(e) => setEndTime(e.target.value)}
-                                                className="mb-2"
-                                            />
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div><strong>Description:</strong> {timeline.description}</div>
-                                            <div><strong>Start Date:</strong> {new Date(timeline.startTime).toLocaleDateString()}</div>
-                                            <div><strong>End Date:</strong> {new Date(timeline.endTime).toLocaleDateString()}</div>
-                                        </>
-                                    )}
-                                    <Button variant="secondary" onClick={() => {
-                                        if (editableTimelineId === timeline.stageId) {
-                                            updateTimeline(timeline.stageId);
-                                            setEditableTimelineId(null);
-                                        } else {
-                                            handleEditClick(timeline.stageId);
-                                        }
-                                    }} className="me-2">
-                                        {editableTimelineId === timeline.stageId ? 'Save' : 'Edit'}
-                                    </Button>
-                                    <Button variant="danger" onClick={() => deleteTimeline(timeline.stageId)}>Delete</Button>
-                                </div>
-                            ))}
+                            <Row xs={1} md={1} className="g-4">
+                                {timelines.map(timeline => (
+                                    <Col key={timeline.stageId}>
+                                        <Card className="timeline-card">
+                                            <Card.Body>
+                                                {editableTimelineId === timeline.stageId ? (
+                                                    <>
+                                                        <Form.Control
+                                                            type="text"
+                                                            name="description"
+                                                            value={updatedTimeline.description}
+                                                            onChange={handleInputChange}
+                                                            className="mb-2"
+                                                        />
+                                                        <Form.Control
+                                                            type="date"
+                                                            name="startDate"
+                                                            value={updatedTimeline.startDate}
+                                                            onChange={handleInputChange}
+                                                            className="mb-2"
+                                                        />
+                                                        <Form.Control
+                                                            type="date"
+                                                            name="endDate"
+                                                            value={updatedTimeline.endDate}
+                                                            onChange={handleInputChange}
+                                                            className="mb-2"
+                                                        />
+                                                        <Button variant="primary" onClick={() => handleSaveClick(timeline.stageId)} className="custom-button">
+                                                            Save
+                                                        </Button>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Card.Title className="card-title">{timeline.description}</Card.Title>
+                                                        <Card.Text>
+                                                            <div><strong>Start Date:</strong> {new Date(timeline.startTime).toLocaleDateString()}</div>
+                                                            <div><strong>End Date:</strong> {new Date(timeline.endTime).toLocaleDateString()}</div>
+                                                        </Card.Text>
+                                                        <div className="d-flex justify-content-end">
+                                                            <Button variant="link" onClick={() => handleEditClick(timeline.stageId)} className="me-2">
+                                                                <FaEdit style={{ color: '#7C5ACB' }} />
+                                                            </Button>
+                                                            <Button variant="link" onClick={() => deleteTimeline(timeline.stageId)}>
+                                                                <FaTrash style={{ color: '#7C5ACB' }} />
+                                                            </Button>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                ))}
+                            </Row>
                         </div>
                     </div>
                 </Col>

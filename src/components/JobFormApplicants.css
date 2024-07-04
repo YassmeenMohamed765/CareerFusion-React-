@@ -1,0 +1,17 @@
+/* JobFormApplicants.css */
+
+.applicant-card {
+    width: 100%;
+}
+
+.download-button {
+    background-color: #7C5ACB;
+    border-color: #7C5ACB;
+    color: #fff;
+}
+
+.download-button:hover {
+    background-color: #5e45a6;
+    border-color: #5e45a6;
+}
+
