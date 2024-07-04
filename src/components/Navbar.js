@@ -9,6 +9,7 @@ const CustomNavbar = ({ userType }) => {
   const location = useLocation();
 
   const isHiringPlanActive = ['/setTimeline', '/define-needs', '/openPositions', '/postview', '/existing-cvs'].includes(location.pathname);
+  const isRecruitmentActive = ['/cvScreening', '/prepareForms', '/selecProcess', '/viewResults', '/techProcess', '/techResults'].includes(location.pathname);
 
   return (
     <Navbar expand="lg" className="custom-navbar fixed-top">
@@ -66,7 +67,7 @@ const CustomNavbar = ({ userType }) => {
                   </NavDropdown.Item>
                 </NavDropdown>
                 
-                <NavDropdown title="Recruitment" id="hiring-plan-dropdown" className={`custom-link ${isHiringPlanActive ? 'active' : ''}`}>
+                <NavDropdown title="Recruitment" id="hiring-plan-dropdown" className={`custom-link ${isRecruitmentActive ? 'active' : ''}`}>
                   <NavDropdown.Item as={NavLink} to="/cvScreening">
                     CV Screening
                   </NavDropdown.Item>
