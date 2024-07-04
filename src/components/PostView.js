@@ -127,7 +127,7 @@ const PostView = ({ limit }) => {
                 />
                 <Card.Body className="custom-card-body">
                   <Card.Text>{truncateContent(post.content, post.postId)}</Card.Text>
-                  <Button variant="primary" className="btn-block" as={Link} to={`/posts/${post.postId}`}>
+                  <Button variant="outline-secondary"  as={Link} to={`/posts/${post.postId}`}>
                     View
                   </Button>
                 </Card.Body>

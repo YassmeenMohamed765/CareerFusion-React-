@@ -42,7 +42,7 @@ const AdminLogin = () => {
                 <Form.Control size="lg" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </Form.Group>
               <div className="d-flex justify-content-around align-items-center mb-4">
-                <Form.Check type="checkbox" id="form1Example3" label="Remember me" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
+                {/* <Form.Check type="checkbox" id="form1Example3" label="Remember me" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} /> */}
                 <Link to="/forgot-pass" className="text-decoration-none">Forgot password?</Link>
               </div>
               <Row>

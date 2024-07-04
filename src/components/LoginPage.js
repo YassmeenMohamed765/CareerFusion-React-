@@ -5,8 +5,8 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import "./authentication.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebookF, faGoogle } from '@fortawesome/free-brands-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faFacebookF, faGoogle } from '@fortawesome/free-brands-svg-icons';
 
 
 
@@ -76,7 +76,7 @@ const handleLogin = async (e) => {
               <Row>
               <div className="d-flex justify-content-around align-items-center mb-4">
                 {/* Checkbox */}
-                <Form.Check type="checkbox" id="form1Example3" label="Remember me" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
+                {/* <Form.Check type="checkbox" id="form1Example3" label="Remember me" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} /> */}
                 <Link to="/forgot-pass" className="text-decoration-none">Forgot password?</Link>
               </div>
               </Row>
@@ -89,22 +89,25 @@ const handleLogin = async (e) => {
               </div>
 
               {/* Continue with Facebook */}
-              <Row>
-              <Button variant="primary" href="#!" className="btn-lg btn-block mb-2" style={{ backgroundColor: '#3b5998' }}>
-              <FontAwesomeIcon icon={faGoogle}className="me-2"/>Continue with Google
-              </Button>
-              </Row>
-              <Row>
+              {/* <Row> */}
+              {/* <Button variant="primary" href="#!" className="btn-lg btn-block mb-2" style={{ backgroundColor: '#3b5998' }}> */}
+              {/* <FontAwesomeIcon icon={faGoogle}className="me-2"/>Continue with Google */}
+              {/* </Button> */}
+              {/* </Row> */}
+              {/* <Row> */}
               {/* Continue with Twitter */}
-              <Button variant="primary" href="#!" className="btn-lg btn-block mb-2" style={{ backgroundColor: '#55acee' }}>
-              <FontAwesomeIcon icon={faFacebookF}className="me-2" />Continue with Facebook
-              </Button>
-              </Row>
+              {/* <Button variant="primary" href="#!" className="btn-lg btn-block mb-2" style={{ backgroundColor: '#55acee' }}> */}
+              {/* <FontAwesomeIcon icon={faFacebookF}className="me-2" />Continue with Facebook */}
+              {/* </Button> */}
+              {/* </Row> */}
             </Form>
 
             <p className="d-flex justify-content-center mt-4">
             Don't have an account?  <Link to="/register">Register now</Link>
             </p>
+            <p className="d-flex justify-content-center mt-4">
+            Login As Admin?  <Link to="/adminLogin">login</Link>
+            </p> 
           </Col>
         </Row>
       </Container>
