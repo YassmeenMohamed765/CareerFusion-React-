@@ -15,12 +15,12 @@ import ApplicationPage from './ApplicationPage';
 import ProfilePage from './ProfilePage';
 /*import HiringPlan from './components/HiringPlan';*/
 import UserProfileDisplay from './UserProfileDisplay';
-import AdminPage from './admin';
+import AdminPage from './components/AdminPage';
 import DefineNeedsPage from './components/DefineNeeds';
 /*import SetTimelinePage from './SetTimeline';*/
 import AdminLogin from './components/adminLogin';
-import OpenPositionsPage from './openPositions';
-import JobDetails from './jobDetails';
+import OpenPositions from './components/OpenPositions';
+import JobDetails from './components/JobDetails';
 import HrProfileDisplay from './HrProfileDisplay';
 import HRProfilePage from './HRProfilePage';
 import UserHomeee from './components/UserHomeee';
@@ -35,6 +35,17 @@ import PostRecruitment from './components/PostRecruitment';
 import SidebarLayout from './components/SidebarLayout';
 import TelephoneInterview from './components/TelephoneInterview';
 import AppraisalPage from './components/AppraisalPage';
+import TelephoneForms from './components/TelphoneForms';
+import AddTelQuestions from './components/AddTelQuestions';
+import JobFormApplicants from './components/JobFormApplicants';
+import SelectionProcess from './components/SelectionProcess';
+import TelInterviewResults from './components/TelInterviewResults';
+import TechSelProcess from './components/TechSelProcess';
+import TechResults from './components/TechResults';
+import ExistingCvs from './components/ExistingCvs';
+import CVScreening from './components/CVScreeningJF';
+import AdminView from './components/AdminView';
+
 
 
 const App = () => {
@@ -58,7 +69,7 @@ const App = () => {
         <Route path='/adminP' element={<AdminPage />} />
         <Route path='/define-needs' element={<DefineNeedsPage />} />
         <Route path='/setTimeline' element={<SetTimeline />} />
-        <Route path='/openPositions' element={<OpenPositionsPage />} />
+        <Route path='/openPositions' element={<OpenPositions />} />
         <Route path='/job/:userId/:jobId' element={<JobDetails />} />
         <Route path='/profileviewhr' element={<HrProfileDisplay/>}/>
         <Route path='/profilehr' element={<HRProfilePage/>}/>
@@ -73,6 +84,17 @@ const App = () => {
         <Route path='/posts/:postId/sidebar' element={<SidebarLayout />} /> {/* New route for SidebarLayout */}
         <Route path='/TelephoneInterview' element={<TelephoneInterview/>}/>
         <Route path='/appraisal' element={<AppraisalPage/>}/>
+        <Route path='/prepareForms' element={<TelephoneForms/>}/>
+        <Route path='/add-questions/:userId/:jobId' element={<AddTelQuestions />} />
+        <Route path='/applicants/:jobId' element={<JobFormApplicants />} />
+        <Route path='/selecProcess' element={<SelectionProcess />} />
+        <Route path='/telephone-interview-results' element={<TelInterviewResults />} />
+        <Route path='/TechProcess' element={<TechSelProcess />} />
+        <Route path='/techResults' element={<TechResults />} />
+        <Route path='/existing-cvs' element={<ExistingCvs />} />
+        <Route path='/cvScreening' element={<CVScreening />} />
+        <Route path='/admin-view/:userId' element={<AdminView />} />
+        
 
         
 
