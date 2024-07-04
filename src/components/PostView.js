@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Alert, Modal } from 'react-bootstrap';
 import axios from 'axios';
-import { FaPlus } from 'react-icons/fa'; 
+import { FaPlus } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import PageForm from './Post';
 import './post.css'; // Import the custom CSS
 import Navbar from "./Navbar";
 
-const PostView = () => {
+const PostView = ({ limit }) => {
   const [posts, setPosts] = useState([]);
   const [postImages, setPostImages] = useState({});
   const [postFiles, setPostFiles] = useState({});
@@ -38,6 +38,7 @@ const PostView = () => {
           post.postPictureIds.forEach(id => {
             imagePromises.push(
               axios.get(`http://localhost:5266/api/PictureUpload/${id}/picture-path`).then(response => {
+                console.log(`Image URL retrieved for post ${post.postId}:`, response.data);
                 imageMap[post.postId] = response.data;
               }).catch(error => {
                 console.error('Error fetching picture:', error);
@@ -59,6 +60,7 @@ const PostView = () => {
       });
 
       await Promise.all([...imagePromises, ...filePromises]);
+      console.log('Image map after fetch:', imageMap); // Log the image map to check if URLs are correctly fetched
       setPostImages(imageMap);
       setPostFiles(fileMap);
     };
@@ -74,7 +76,7 @@ const PostView = () => {
   };
 
   const truncateContent = (content, postId) => {
-    const maxLength = 50; 
+    const maxLength = 50;
     if (content.length <= maxLength) {
       return content;
     }
@@ -89,27 +91,32 @@ const PostView = () => {
   };
 
   const addNewPost = (newPost) => {
+    console.log('New post added:', newPost);
     setPosts((prevPosts) => [newPost, ...prevPosts]);
+    setPostImages((prevImages) => ({ ...prevImages, [newPost.postId]: newPost.picture }));
   };
 
   const handleCardClick = (postId) => {
     navigate(`/posts/${postId}/sidebar`);
   };
 
+  const displayedPosts = limit ? posts.slice(0, limit) : posts;
+
   return (
     <Container className="mt-4">
       <Navbar userType="hr" />
+      
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3>Your Posts</h3>
         <Button variant="primary" className="btn-block" onClick={() => setShowModal(true)}>
-          <FaPlus /> Write Post 
+          <FaPlus /> Write Post
         </Button>
       </div>
-      {posts.length === 0 ? (
+      {displayedPosts.length === 0 ? (
         <Alert variant="secondary">No posts yet</Alert>
       ) : (
         <Row>
-          {posts.map((post) => (
+          {displayedPosts.map((post) => (
             <Col key={post.postId} md={6} lg={4} className="mb-4">
               <Card className="custom-card" onClick={() => handleCardClick(post.postId)}>
                 <Card.Img

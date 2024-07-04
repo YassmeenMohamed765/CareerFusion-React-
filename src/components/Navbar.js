@@ -20,7 +20,7 @@ const CustomNavbar = ({ userType }) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto custom-nav">
             {userType === 'hr' && (
-              <Nav.Link as={NavLink} to="/hrHome" className="custom-link" activeClassName="active">
+              <Nav.Link as={NavLink} to="/home" className="custom-link" activeClassName="active">
                 Home
               </Nav.Link>
             )}

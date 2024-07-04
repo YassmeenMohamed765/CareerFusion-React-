@@ -45,6 +45,7 @@ import TechResults from './components/TechResults';
 import ExistingCvs from './components/ExistingCvs';
 import CVScreening from './components/CVScreeningJF';
 import AdminView from './components/AdminView';
+import HomePage from './components/HomePage';
 
 
 
@@ -94,8 +95,7 @@ const App = () => {
         <Route path='/existing-cvs' element={<ExistingCvs />} />
         <Route path='/cvScreening' element={<CVScreening />} />
         <Route path='/admin-view/:userId' element={<AdminView />} />
-        
-
+        <Route path='/home' element={<HomePage/>}/>
         
 
 
