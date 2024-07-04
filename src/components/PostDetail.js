@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Card, Row, Col, Table, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import './post.css'; // Import the custom CSS
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import './post.css';
 
 const PostDetail = () => {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
-  const [cvs, setCvs] = useState([]); // State to store CV URLs
-  const [showCheckboxes, setShowCheckboxes] = useState(false); // State to toggle checkboxes
-  const [selectedCvs, setSelectedCvs] = useState([]); // State to store selected CVs
+  const [cvs, setCvs] = useState([]);
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [selectedCvs, setSelectedCvs] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -24,7 +25,7 @@ const PostDetail = () => {
     const fetchCvs = async () => {
       try {
         const response = await axios.get(`http://localhost:5266/api/CVUpload/${postId}/cv-paths`);
-        setCvs(response.data); // Store CV URLs in state
+        setCvs(response.data);
       } catch (error) {
         console.error('Error fetching CVs:', error);
       }
@@ -56,18 +57,38 @@ const PostDetail = () => {
   };
 
   const handleSelectAllChange = () => {
-    if (selectedCvs.length === cvs.length) {
+    if (selectAll) {
       setSelectedCvs([]);
+      setSelectAll(false);
     } else {
       setSelectedCvs(cvs.map((_, index) => index));
+      setSelectAll(true);
     }
   };
 
+  const handleDownloadCvs = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5266/api/CVUpload/${postId}/download-cvs`, {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'cvs.zip'); // Specify the file name
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error('Error downloading CVs:', error);
+    }
+  };
+
+  
+
   return (
-    <Container className="mt-4">
+    <Container className="post-detail-container mt-4">
       <Card className="mb-4">
         <Card.Header>
-          <h2>Your Post</h2>
+          <h4>Your Post</h4>
         </Card.Header>
         <Card.Body>
           <Row>
@@ -91,10 +112,30 @@ const PostDetail = () => {
 
       <Card className="mb-4">
         <Card.Header className="d-flex justify-content-between align-items-center">
-          <h2>Candidates Applied to This Post</h2>
-          <Button variant="primary" onClick={() => setShowCheckboxes(!showCheckboxes)}>
-            Select
-          </Button>
+          <h5>Candidates Applied to This Post</h5>
+          <div>
+            <Button
+              variant="outline-primary"
+              onClick={() => {
+                setShowCheckboxes(!showCheckboxes);
+                if (showCheckboxes) {
+                  setSelectedCvs([]);
+                  setSelectAll(false);
+                }
+              }}
+            >
+              {showCheckboxes ? 'Cancel' : 'Select All'}
+            </Button>
+            {selectedCvs.length > 0 && (
+              <Button
+                variant="outline-secondary"
+                style={{ marginLeft: '10px' }}
+                onClick={handleDownloadCvs}
+              >
+                Download CVs
+              </Button>
+            )}
+          </div>
         </Card.Header>
         <Card.Body>
           <Table striped bordered hover>
@@ -108,7 +149,7 @@ const PostDetail = () => {
                     <Form.Check
                       type="checkbox"
                       onChange={handleSelectAllChange}
-                      checked={selectedCvs.length === cvs.length}
+                      checked={selectAll}
                       className="custom-checkbox"
                       label="Select All"
                     />
@@ -145,6 +186,7 @@ const PostDetail = () => {
               )}
             </tbody>
           </Table>
+          
         </Card.Body>
       </Card>
     </Container>

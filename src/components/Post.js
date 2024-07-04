@@ -74,7 +74,7 @@ const PageForm = ({ addNewPost, closeModal }) => {
 
       let pictureUrl = null;
       if (formData.image) {
-        const imageResponse = await uploadMedia(`/api/PictureUpload/${postId}/upload-picture`, formData.image, 'picture');
+        const imageResponse = await uploadMedia(`http://localhost:5266/api/PictureUpload/${postId}/upload-picture`, formData.image, 'picture');
         pictureUrl = imageResponse.url;
       }
 

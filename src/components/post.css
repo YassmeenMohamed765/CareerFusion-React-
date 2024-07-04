@@ -1,43 +1,42 @@
 body {
-    color: #000;
-    overflow-x: hidden;
-    height: 100%;
-
-    background-repeat: no-repeat;
+  color: #000;
+  overflow-x: hidden;
+  height: 100%;
+  background-repeat: no-repeat;
 }
 
 textarea {
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-    color: #616161;
-    border: 1px solid #F5F5F5;
-    font-size: 16px;
-    letter-spacing: 1px;
-    width: 200%;
-    height: 150px !important;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  color: #616161;
+  border: 1px solid #F5F5F5;
+  font-size: 16px;
+  letter-spacing: 1px;
+  width: 200%;
+  height: 150px !important;
 }
+
 /* Custom CSS for consistent card dimensions */
 .custom-card {
-    height: 100%; /* Ensure cards take full height of the column */
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .custom-card-img {
-    height: 200px; /* Set a fixed height for images */
-    object-fit: cover; /* Ensure images cover the area without distortion */
-  }
-  
-  .custom-card-body {
-    flex-grow: 1; /* Allow the body to grow and fill the available space */
-    overflow: hidden; /* Hide overflowing content */
-  }
-  
-  .custom-card-footer {
-    text-align: center;
-  }
-  
+  height: 100%; /* Ensure cards take full height of the column */
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-card-img {
+  height: 210px; /* Set a fixed height for images */
+  object-fit: cover; /* Ensure images cover the area without distortion */
+}
+
+.custom-card-body {
+  flex-grow: 1; /* Allow the body to grow and fill the available space */
+  overflow: hidden; /* Hide overflowing content */
+}
+
+.custom-card-footer {
+  text-align: center;
+}
 
 /* PostDetail.css */
 .custom-checkbox .form-check-input {
@@ -49,7 +48,116 @@ textarea {
   background-color: #23272b; /* Darker color when checked */
   border-color: #23272b;
 }
-
 .custom-checkbox .form-check-label {
   margin-left: 0.5rem;
+}
+
+.accordion-button {
+  display: flex;
+  align-items: center;
+}
+
+.accordion-body a {
+  color: #6c63ff;
+  text-decoration: none;
+}
+
+.accordion-body a:hover {
+  text-decoration: underline;
+}
+
+.recruitment-container {
+  padding: 0;
+  margin-top: 10px; /* Ensure both sidebar and content start at the same height */
+}
+
+.recruitment-sidebar {
+  padding-right: 0;
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  height: calc(100vh - 20px); /* Ensure the sidebar takes the full height minus the top margin */
+  position: fixed; /* Fix the sidebar */
+  top: 60px; /* Adjust this value based on the height of your navbar */
+  left: 0;
+  width: 16.666667%; /* This should be equal to the width of your sidebar column (2/12 of the grid) */
+}
+
+.recruitment-content {
+  padding-left: 20px;
+  margin-top: 0px; /* Adjust this value based on the height of your navbar */
+  margin-left: 16.666667%; /* This should be equal to the width of your sidebar column (2/12 of the grid) */
+}
+
+.sidebar-item {
+  padding: 15px 20px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+  font-weight: bold;
+  /* color: #495057; */
+  border-left: 5px solid transparent; /* Default border */
+  
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+  background-color: #e9ecef;
+}
+
+.sidebar-item.active {
+  border-left: 5px solid #7A5AC9; /* Blue border for active item */
+}
+
+hr {
+  margin: 0;
+}
+
+/* CV Screening */
+.cv-screening-container {
+  margin-top: 20px; /* Ensure consistent top margin for the CV Screening page */
+}
+
+.wrapper {
+  text-align: center;
+  padding: 20px;
+}
+
+.upload-container {
+  display: inline-block;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+  color: #343a40;
+}
+
+.border-container {
+  border: 2px dashed #ccc;
+  padding: 20px;
+}
+
+.icons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.file-browser {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.file-icon {
+  margin-right: 10px;
+  color: #007bff;
 }
