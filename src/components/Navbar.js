@@ -99,11 +99,7 @@ const CustomNavbar = ({ userType }) => {
                 </Nav.Link>
               </>
             )}
-            <NavDropdown title="Notifications" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#notification1">Notification 1</NavDropdown.Item>
-              <NavDropdown.Item href="#notification2">Notification 2</NavDropdown.Item>
-              <NavDropdown.Item href="#notification3">Notification 3</NavDropdown.Item>
-            </NavDropdown>
+           
           </Nav>
         </Navbar.Collapse>
       </Container>
