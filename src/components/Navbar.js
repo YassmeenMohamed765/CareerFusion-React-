@@ -7,7 +7,7 @@ import './Navbar.css'; // Import the CSS file
 
 const CustomNavbar = ({ userType }) => {
   const location = useLocation();
-  
+
   const isHiringPlanActive = ['/setTimeline', '/define-needs', '/openPositions', '/postview', '/existing-cvs'].includes(location.pathname);
 
   return (
@@ -49,6 +49,7 @@ const CustomNavbar = ({ userType }) => {
                     Set Timeline
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
+                  <NavDropdown.Header className="dropdown-header">Hiring Needs</NavDropdown.Header>
                   <NavDropdown.Item as={NavLink} to="/define-needs">
                     Define Needs
                   </NavDropdown.Item>
@@ -56,6 +57,7 @@ const CustomNavbar = ({ userType }) => {
                     Open Positions
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
+                  <NavDropdown.Header className="dropdown-header">Available Strategies</NavDropdown.Header>
                   <NavDropdown.Item as={NavLink} to="/postview">
                     Write Post
                   </NavDropdown.Item>
@@ -63,8 +65,36 @@ const CustomNavbar = ({ userType }) => {
                     Existing CVs
                   </NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Link as={NavLink} to="/recruitment" className="custom-link" activeClassName="active">
-                  Recruitment
+                
+                <NavDropdown title="Recruitment" id="hiring-plan-dropdown" className={`custom-link ${isHiringPlanActive ? 'active' : ''}`}>
+                  <NavDropdown.Item as={NavLink} to="/cvScreening">
+                    CV Screening
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Header className="dropdown-header">Telephone Interview</NavDropdown.Header>
+                  <NavDropdown.Item as={NavLink} to="/prepareForms">
+                    Prepare Forms
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={NavLink} to="/selecProcess">
+                    Selection Process
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={NavLink} to="/viewResults">
+                    View Results
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Header className="dropdown-header">Technical Interview</NavDropdown.Header>
+                  <NavDropdown.Item as={NavLink} to="/techProcess">
+                    Selection Process
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={NavLink} to="/assignTask">
+                    Assign Task
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={NavLink} to="/techResults">
+                    View Result
+                  </NavDropdown.Item>
+                </NavDropdown>
+                <Nav.Link as={NavLink} to="/appraisal" className="custom-link" activeClassName="active">
+                  Appraisal
                 </Nav.Link>
                 <Nav.Link as={NavLink} to="/appraisal" className="custom-link" activeClassName="active">
                   Appraisal

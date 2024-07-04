@@ -27,11 +27,10 @@ html, body, #root {
     padding: 10px;
     border-radius: 5px;
     background: linear-gradient(45deg, #7C5ACB, #DED8F3);
-    
 }
 
 .custom-button {
-    background-color:rgba(124, 90, 203, 1);
+    background-color: rgba(124, 90, 203, 1);
     border-color: rgba(222, 216, 243, 1);
 }
 
@@ -41,30 +40,29 @@ html, body, #root {
     color: #3f51b5;
 }
 
-
-
-.section-title span {
-    color:rgba(124, 90, 203, 1);
-    font-weight: bold;
+.timelines-title {
+    color: white;
+    text-align: center;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #7C5ACB, #DED8F3);
+    
 }
-
-.section-content {
-    padding: 10px;
-    background-color: #fff;
-}
-
 .hidden {
     display: none;
 }
 
-
-.timeline-item {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+.timeline-card {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #DED8F3;
+    width: 100%;
 }
-
-.timeline-item:last-child {
-    border-bottom: none;
+.timeline-card:last-child {
+    margin-bottom: 0;
 }
 
 .message-box {
@@ -72,4 +70,16 @@ html, body, #root {
     color: white;
     padding: 10px;
     border-radius: 5px;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-content-end {
+    justify-content: flex-end;
+}
+
+.card-title {
+    color: #7C5ACB;
 }

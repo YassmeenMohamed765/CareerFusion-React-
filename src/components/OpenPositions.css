@@ -1,0 +1,21 @@
+.positions-title {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 40px;
+    background: linear-gradient(45deg, #7C5ACB, #DED8F3);
+    
+}
+ .card {
+    margin-bottom: 20px;
+  }
+  
+  .row {
+    width: 100%;
+  }
+  
+.cardTitle{
+    color: #7C5ACB;
+}
+  
