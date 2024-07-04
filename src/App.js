@@ -35,6 +35,7 @@ import PostRecruitment from './components/PostRecruitment';
 import SidebarLayout from './components/SidebarLayout';
 import TelephoneInterview from './components/TelephoneInterview';
 import AppraisalPage from './components/AppraisalPage';
+import HomePage from './components/HomePage';
 
 
 const App = () => {
@@ -73,7 +74,7 @@ const App = () => {
         <Route path='/posts/:postId/sidebar' element={<SidebarLayout />} /> {/* New route for SidebarLayout */}
         <Route path='/TelephoneInterview' element={<TelephoneInterview/>}/>
         <Route path='/appraisal' element={<AppraisalPage/>}/>
-
+        <Route path='/home' element={<HomePage/>}/>
         
 
 
