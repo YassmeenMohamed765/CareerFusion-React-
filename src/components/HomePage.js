@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import PostView from './PostView';
 import Navbar from "./Navbar";
+import OpenPositions from './OpenPositions';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const HomePage = () => {
           Show More
         </Button>
       </div>
+      <OpenPositions/>
     </Container>
   );
 };
