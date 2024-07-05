@@ -1,21 +1,48 @@
 .positions-title {
-    color: white;
-    text-align: left;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 40px;
-    background: linear-gradient(45deg, #7C5ACB, #DED8F3);
-    
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 40px;
+  width: 75%;
+  background: linear-gradient(45deg, #7C5ACB, #DED8F3);
 }
- .card {
-    margin-bottom: 20px;
-  }
-  
-  .row {
-    width: 100%;
-  }
-  
-.cardTitle{
-    color: #7C5ACB;
+
+/* OpenPositions.css */
+
+/* Style for the entire OpenPositions component */
+.open-positions {
+  padding: 40px;
+  height: 80vh;
+  margin-left: -10px; /* Adjust margin as needed */
 }
-  
+
+/* Style for the title */
+.positions-title {
+  text-align: left;
+  width: 100%;
+}
+
+/* Style for the Card */
+.open-positions-card {
+  background-color: #DED8F3;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  margin-left: 0; /* Ensure no left margin */
+}
+
+
+
+/* Style for the Card Title */
+.open-positions-card-title {
+  text-decoration: none;
+  color: inherit; /* Inherit color from parent */
+}
+
+/* Style for job icons */
+.open-positions-job-icon {
+  margin-right: 5px; /* Adjust margin as needed */
+}
+
+/* Additional styles as per your component's requirements */

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Card, Row, Col } from 'react-bootstrap';
-import './OpenPositions.css';
+import './OpenPositions.css'; // Ensure this CSS file contains the necessary styles
 import Navbar from './Navbar';
 
 const OpenPositions = () => {
@@ -23,18 +23,18 @@ const OpenPositions = () => {
     };
 
     return (
-        <div style={{ padding: '40px', height: '80vh' }}>
-            <Container>
-                <Navbar userType="hr" />
+        <div className="open-positions-container" > {/* Renamed with unique class name */}
+            <Navbar userType="hr" />
+            <Container className="open-positions-content" style ={{paddingTop:"25px"}}> {/* Renamed with unique class name */}
                 <h1 className='positions-title'>Open Positions</h1>
-                <Row xs={1} md={3} className="g-4 justify-content-center">
+                <Row xs={1} md={3} className="g-4 open-positions-row"> {/* Renamed with unique class name */}
                     {jobs.map((job, index) => (
-                        <Col key={index} className="d-flex justify-content-center">
-                            <Card style={{ backgroundColor: '#DED8F3', padding: '20px', borderRadius: '10px' }}>
+                        <Col key={index} className="open-positions-col"> {/* Renamed with unique class name */}
+                            <Card className="open-positions-card"> {/* Renamed with unique class name */}
                                 <Card.Img variant="top" src="https://cdn.pixabay.com/photo/2015/07/17/22/42/laptop-849800_1280.jpg" />
                                 <Card.Body>
-                                    <Link to={`/job/${userId}/${job.jobId}`} style={{ textDecoration: 'none' }}>
-                                        <Card.Title style={{ color: "#7C5ACB" }}>{job.jobTitle}</Card.Title>
+                                    <Link to={`/job/${userId}/${job.jobId}`} className="open-positions-link"> {/* Renamed with unique class name */}
+                                        <Card.Title className="open-positions-cardTitle">{job.jobTitle}</Card.Title>
                                     </Link>
                                     <Card.Text>
                                         <div>
