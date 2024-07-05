@@ -89,7 +89,7 @@ const App = () => {
         <Route path='/add-questions/:userId/:jobId' element={<AddTelQuestions />} />
         <Route path='/applicants/:jobId' element={<JobFormApplicants />} />
         <Route path='/selecProcess' element={<SelectionProcess />} />
-        <Route path='/telephone-interview-results' element={<TelInterviewResults />} />
+        <Route path='/viewResults' element={<TelInterviewResults />} />
         <Route path='/TechProcess' element={<TechSelProcess />} />
         <Route path='/techResults' element={<TechResults />} />
         <Route path='/existing-cvs' element={<ExistingCvs />} />
