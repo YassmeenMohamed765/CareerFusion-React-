@@ -94,9 +94,6 @@ const CustomNavbar = ({ userType }) => {
                   <NavDropdown.Item as={NavLink} to="/techProcess">
                     Selection Process
                   </NavDropdown.Item>
-                  <NavDropdown.Item as={NavLink} to="/assignTask">
-                    Assign Task
-                  </NavDropdown.Item>
                   <NavDropdown.Item as={NavLink} to="/techResults">
                     View Result
                   </NavDropdown.Item>
