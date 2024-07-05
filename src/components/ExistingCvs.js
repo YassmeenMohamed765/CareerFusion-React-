@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, Container, Row, Col } from 'react-bootstrap';
+import Navbar from './Navbar';
 
 const ExistingCvs = () => {
   const [cvs, setCvs] = useState([]);
@@ -22,6 +23,7 @@ const ExistingCvs = () => {
 
   return (
     <Container>
+      <Navbar userType="hr" />
       <Row className="my-4">
         {cvs.map(cv => (
           <Col key={cv.userId} xs={12} md={6} lg={4} className="mb-4">
