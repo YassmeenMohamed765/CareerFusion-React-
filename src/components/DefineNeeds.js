@@ -215,30 +215,6 @@ const DefineNeeds = () => {
                 </Col>
               </Form.Group>
 
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm="2">Telephone Interview Questions:</Form.Label>
-                <Col sm="10">
-                  {formData.TelephoneInterviewQuestions.map((question, index) => (
-                    <div key={index} className="mb-2">
-                      <Form.Control
-                        type="text"
-                        value={question.Question}
-                        onChange={(e) => handleFieldChange(index, 'TelephoneInterviewQuestions', e)}
-                        placeholder={`Enter question ${index + 1}`}
-                      />
-                      {index === formData.TelephoneInterviewQuestions.length - 1 && (
-                        <Button
-                          variant="outline-primary"
-                          className="mt-2"
-                          onClick={() => handleAddField('TelephoneInterviewQuestions')}
-                        >
-                          Add
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                </Col>
-              </Form.Group>
 
               <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <Button variant="primary" type="submit">
