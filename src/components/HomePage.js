@@ -13,7 +13,7 @@ const HomePage = () => {
       <Navbar userType="hr" />
       
       <PostView limit={3} />
-      <div className="d-flex justify-content-center mt-4">
+      <div className="d-flex justify-content-center mt-0 mb-0">
         <Button variant="outline-secondary" onClick={() => navigate('/postview')}>
           Show More
         </Button>
