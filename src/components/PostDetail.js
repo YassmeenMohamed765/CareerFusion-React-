@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Card, Row, Col, Table, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { FaFilePdf, FaFileWord } from 'react-icons/fa';
 import './post.css';
 
 const PostDetail = () => {
@@ -9,6 +10,7 @@ const PostDetail = () => {
   const [post, setPost] = useState(null);
   const [cvs, setCvs] = useState([]);
   const [postImages, setPostImages] = useState([]);
+  const [postFiles, setPostFiles] = useState([]);
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectedCvs, setSelectedCvs] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -32,6 +34,13 @@ const PostDetail = () => {
           } else {
             console.log('No postPictureIds found in the response.');
           }
+
+          if (currentPost.postFileIds && currentPost.postFileIds.length > 0) {
+            console.log('Post file IDs:', currentPost.postFileIds);
+            await fetchPostFiles(currentPost.postFileIds);
+          } else {
+            console.log('No postFileIds found in the response.');
+          }
         }
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -51,7 +60,7 @@ const PostDetail = () => {
 
     const fetchPostImages = async (pictureIds) => {
       try {
-        const imagePromises = pictureIds.map(id => 
+        const imagePromises = pictureIds.map(id =>
           axios.get(`http://localhost:5266/api/PictureUpload/${id}/picture-path`).then(response => {
             console.log(`Image URL retrieved for pictureId ${id}:`, response.data);
             return response.data;
@@ -68,6 +77,25 @@ const PostDetail = () => {
       }
     };
 
+    const fetchPostFiles = async (fileIds) => {
+      try {
+        const filePromises = fileIds.map(id =>
+          axios.get(`http://localhost:5266/api/FileUpload/${id}/url`).then(response => {
+            console.log(`File URL retrieved for fileId ${id}:`, response.data);
+            return response.data;
+          }).catch(error => {
+            console.error(`Error fetching file for fileId ${id}:`, error);
+            return null;
+          })
+        );
+        const files = await Promise.all(filePromises);
+        setPostFiles(files.filter(file => file !== null));
+        console.log('Post files:', files);
+      } catch (error) {
+        console.error('Error fetching post files:', error);
+      }
+    };
+
     fetchPost();
     fetchCvs();
   }, [postId]);
@@ -79,6 +107,16 @@ const PostDetail = () => {
   const formatDateTime = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleString('en-US', options);
+  };
+
+  const getFileIcon = (fileUrl) => {
+    const extension = fileUrl.split('.').pop().toLowerCase();
+    if (extension === 'pdf') {
+      return <FaFilePdf style={{ marginRight: '5px', color: 'red' }} />;
+    } else if (extension === 'doc' || extension === 'docx') {
+      return <FaFileWord style={{ marginRight: '5px', color: 'blue' }} />;
+    }
+    return null;
   };
 
   const handleSelectChange = (index) => {
@@ -129,6 +167,16 @@ const PostDetail = () => {
           <Row>
             <Col md={7}>
               <Card.Text>{post.content}</Card.Text>
+              {postFiles.length > 0 && (
+                <div className="post-files">
+                  {postFiles.map((fileUrl, index) => (
+                    <div key={index} className="post-file-link">
+                      {getFileIcon(fileUrl)}
+                      <a href={fileUrl} target="_blank" rel="noopener noreferrer">{fileUrl.split('/').pop()}</a>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Col>
             <Col md={5}>
               {postImages.length > 0 ? (
