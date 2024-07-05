@@ -2,20 +2,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Card, Button, Modal, Form, Table } from 'react-bootstrap';
 import { FaFileUpload, FaFileWord, FaFileExcel } from 'react-icons/fa';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import './post.css';
 import Navbar from './Navbar';
 
-const CVScreening = () => {
+const CVScreeningJF = () => {
+  const { postId } = useParams();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [showPositionModal, setShowPositionModal] = useState(false);
   const [showSkillsModal, setShowSkillsModal] = useState(false);
   const [position, setPosition] = useState('');
   const [skills, setSkills] = useState(['']);
-  const [matchedCVs, setMatchedCVs] = useState([]); // Initialize with an empty array
+  const [matchedCVs, setMatchedCVs] = useState([]);
   const [emails, setEmails] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [selectedJobId, setSelectedJobId] = useState(null);
+  const [screeningCompleted, setScreeningCompleted] = useState(false); // Add state for screening completion
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -30,11 +33,17 @@ const CVScreening = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get('/api/JobForm/all-open-positions');
+      const response = await axios.get('http://localhost:5266/api/JobForm/all-open-positions');
       setJobs(response.data);
     } catch (error) {
       console.error('Error fetching jobs:', error);
     }
+  };
+
+  const handleJobSelect = (selectedJobId) => {
+    setSelectedJobId(selectedJobId);
+    setMatchedCVs([]);
+    setScreeningCompleted(false); // Reset screening completion flag
   };
 
   const handleFileSelect = (event) => {
@@ -78,6 +87,7 @@ const CVScreening = () => {
       setPosition('');
       setSkills(['']);
       setSelectedFiles([]);
+      setScreeningCompleted(true); // Update screening completion state
     } catch (error) {
       console.error('Error submitting skills:', error);
     }
@@ -88,11 +98,12 @@ const CVScreening = () => {
       const response = await axios.get('https://cv-screening.onrender.com/get-matched-cvs');
       const cvs = response.data;
       setMatchedCVs(cvs);
-      console.log('Matched CVs:', cvs);
 
+      // Extract emails from the matched CVs
       const extractedEmails = cvs.map(cv => cv.contact_info.email);
       setEmails(extractedEmails);
 
+      // Send the emails to the PUT endpoint
       await updateScreenedEmails(extractedEmails);
     } catch (error) {
       console.error('Error fetching matched CVs:', error);
@@ -101,7 +112,7 @@ const CVScreening = () => {
 
   const updateScreenedEmails = async (emails) => {
     try {
-      const response = await axios.put(`/api/OpenPosCV/update-scores-for-screened/${selectedJobId}`, emails, {
+      const response = await axios.put(`http://localhost:5266/api/OpenPosCV/update-scores-for-screened/${selectedJobId}`, emails, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -165,7 +176,7 @@ const CVScreening = () => {
       <Card className="my-3">
         <Card.Header className="d-flex justify-content-between align-items-center">
           CV Screening
-          <Button style={{ backgroundColor: '#7A5AC9' }} onClick={handleBrowseClick}>
+          <Button style={{ backgroundColor: '#7A5AC9'}} onClick={handleBrowseClick}>
             <FaFileUpload className="me-2" />
             Screen CVs
           </Button>
@@ -175,7 +186,7 @@ const CVScreening = () => {
             <Form.Label>Select Job Position</Form.Label>
             <Form.Control
               as="select"
-              onChange={(e) => setSelectedJobId(e.target.value)}
+              onChange={(e) => handleJobSelect(e.target.value)}
               value={selectedJobId || ''}
             >
               <option value="" disabled>Select a job position</option>
@@ -225,103 +236,101 @@ const CVScreening = () => {
                   </div>
                 ))}
               </div>
-              <Button style={{ backgroundColor: '#7A5AC9' }} onClick={handleFileUpload}>
-                <FaFileUpload /> Upload CVs
-              </Button>
+              <Button style={{ backgroundColor: '#7A5AC9'}} onClick={handleFileUpload}> <FaFileUpload  /> Upload CVs </Button>
             </div>
           )}
         </Card.Body>
 
-        {/* Position Modal */}
-        <Modal show={showPositionModal} onHide={() => setShowPositionModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Enter Position</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="position">
-                <Form.Label>Position</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={position}
-                  onChange={(e) => setPosition(e.target.value)}
-                  placeholder="Enter position"
-                />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowPositionModal(false)}>Close</Button>
-            <Button style={{ backgroundColor: '#7A5AC9' }} onClick={handlePositionSubmit}>Submit</Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/* Skills Modal */}
-        <Modal show={showSkillsModal} onHide={() => setShowSkillsModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Enter Skills</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="skills">
-                <Form.Label>Skills</Form.Label>
-                {skills.map((skill, index) => (
-                  <Form.Control
-                    key={index}
-                    type="text"
-                    value={skill}
-                    onChange={(e) => handleSkillChange(index, e)}
-                    placeholder={`Enter skill #${index + 1}`}
-                    className="mb-2"
-                  />
-                ))}
-                <Button style={{ backgroundColor: '#7A5AC9' }} onClick={handleAddSkill}>Add Skill</Button>
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowSkillsModal(false)}>Close</Button>
-            <Button style={{ backgroundColor: '#7A5AC9' }} onClick={handleSkillsSubmit}>Submit</Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/* Matched CVs Table */}
-        <Card.Body>
-          <Card.Title>Matched CVs</Card.Title>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Skills</th>
-              </tr>
-            </thead>
-            <tbody>
-              {matchedCVs.map((cv, index) => (
-                <tr key={cv.id}>
-                  <td>{index + 1}</td>
-                  <td>{cv.name}</td>
-                  <td>{cv.contact_info.email}</td>
-                  <td>{cv.contact_info.phone}</td>
-                  <td>{cv.skills.join(', ')}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Card.Body>
-
-        {/* Export to Excel Button */}
-        <Card.Footer>
-          <Button style={{ backgroundColor: '#7A5AC9' }} onClick={handleExportToExcel}>
+        <Card.Footer className="d-flex justify-content-between align-items-center">
+          <Button style={{ backgroundColor: '#7A5AC9'}} onClick={handleExportToExcel}>
             <FaFileExcel className="me-2" />
-            Export to Excel
+            Export Results
           </Button>
         </Card.Footer>
+      </Card>
+
+      <Modal show={showPositionModal} onHide={() => setShowPositionModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Enter Position</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group controlId="position">
+            <Form.Label>Position</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter position"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowPositionModal(false)}>
+            Close
+          </Button>
+          <Button style={{ backgroundColor: '#7A5AC9'}} onClick={handlePositionSubmit}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showSkillsModal} onHide={() => setShowSkillsModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Enter Skills</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {skills.map((skill, index) => (
+            <Form.Group key={index} controlId={`skill-${index}`}>
+              <Form.Label>Skill {index + 1}</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder={`Enter skill ${index + 1}`}
+                value={skill}
+                onChange={(e) => handleSkillChange(index, e)}
+              />
+            </Form.Group>
+          ))}
+          <Button style={{ backgroundColor: '#7A5AC9'}} onClick={handleAddSkill}>
+            Add Skill
+          </Button>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowSkillsModal(false)}>
+            Close
+          </Button>
+          <Button style={{ backgroundColor: '#7A5AC9'}} onClick={handleSkillsSubmit}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Card className="mt-3">
+        <Card.Header>Matched CVs</Card.Header>
+        <Card.Body>
+          {matchedCVs.length > 0 ? (
+            <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {matchedCVs.map(cv => (
+                  <tr key={cv.cvId}>
+                    <td>{cv.cvName}</td>
+                    <td>{cv.contact_info.email}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <p>No matched CVs found.</p>
+          )}
+        </Card.Body>
       </Card>
     </div>
   );
 };
 
-export default CVScreening;
+export default CVScreeningJF;
