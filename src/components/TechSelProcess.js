@@ -220,8 +220,16 @@ const TechSelProcess = () => {
                     </td>
                     <td>{candidate.userFullName}</td>
                     <td>{candidate.userEmail}</td>
-                    <td>{formatDateTime(candidate.technicalAssessmentDate)}</td>
-                    <td>{formatDateTime(candidate.physicalInterviewDate)}</td>
+                    <td>
+                      <Button variant="link" onClick={() => handleSetInterviewDateClick(candidate)}>
+                        {formatDateTime(candidate.technicalAssessmentDate)}
+                      </Button>
+                    </td>
+                    <td>
+                      <Button variant="link" onClick={() => handleSetInterviewDateClick(candidate)}>
+                        {formatDateTime(candidate.physicalInterviewDate)}
+                      </Button>
+                    </td>
                     <td>
                       {isAccepted(candidate.id) ? (
                         <Button variant="success" size="sm" onClick={() => handleToggleStatusClick(candidate)}>
