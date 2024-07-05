@@ -9,6 +9,7 @@ const CustomNavbar = ({ userType }) => {
   const location = useLocation();
 
   const isHiringPlanActive = ['/setTimeline', '/define-needs', '/openPositions', '/postview', '/existing-cvs'].includes(location.pathname);
+  const isRecruitmentActive = ['/cvScreening', '/prepareForms', '/selecProcess', '/viewResults', '/techProcess', '/techResults'].includes(location.pathname);
 
   return (
     <Navbar expand="lg" className="custom-navbar fixed-top">
@@ -66,7 +67,7 @@ const CustomNavbar = ({ userType }) => {
                   </NavDropdown.Item>
                 </NavDropdown>
                 
-                <NavDropdown title="Recruitment" id="hiring-plan-dropdown" className={`custom-link ${isHiringPlanActive ? 'active' : ''}`}>
+                <NavDropdown title="Recruitment" id="hiring-plan-dropdown" className={`custom-link ${isRecruitmentActive ? 'active' : ''}`}>
                   <NavDropdown.Item as={NavLink} to="/cvScreening">
                     CV Screening
                   </NavDropdown.Item>
@@ -96,16 +97,9 @@ const CustomNavbar = ({ userType }) => {
                 <Nav.Link as={NavLink} to="/appraisal" className="custom-link" activeClassName="active">
                   Appraisal
                 </Nav.Link>
-                <Nav.Link as={NavLink} to="/appraisal" className="custom-link" activeClassName="active">
-                  Appraisal
-                </Nav.Link>
               </>
             )}
-            <NavDropdown title="Notifications" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#notification1">Notification 1</NavDropdown.Item>
-              <NavDropdown.Item href="#notification2">Notification 2</NavDropdown.Item>
-              <NavDropdown.Item href="#notification3">Notification 3</NavDropdown.Item>
-            </NavDropdown>
+           
           </Nav>
         </Navbar.Collapse>
       </Container>
