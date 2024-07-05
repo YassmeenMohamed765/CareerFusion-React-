@@ -1,159 +1,181 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, Modal, Button } from 'react-bootstrap';
-import { FaInfoCircle } from 'react-icons/fa';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React, { useEffect, useState } from 'react';
+import { Container, Card, Button, Table, Form, Modal } from 'react-bootstrap';
+import axios from 'axios';
+import { BsFileExcel } from 'react-icons/bs'; // Importing Excel icon
 import Navbar from './Navbar';
 
 const TechResults = () => {
-    const [openPositions, setOpenPositions] = useState([]);
-    const [selectedJobId, setSelectedJobId] = useState(null);
-    const [passedCandidates, setPassedCandidates] = useState([]);
-    const [selectedCandidate, setSelectedCandidate] = useState(null);
-    const [showContactModal, setShowContactModal] = useState(false);
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [interviewDate, setInterviewDate] = useState(new Date());
+  const [jobId, setJobId] = useState(null);
+  const [jobTitles, setJobTitles] = useState([]);
+  const [candidates, setCandidates] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [contactInfo, setContactInfo] = useState(null);
 
-    useEffect(() => {
-        const fetchOpenPositions = async () => {
-            try {
-                const response = await fetch(`http://localhost:5266/api/JobForm/all-open-positions`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch open positions');
-                }
-                const data = await response.json();
-                setOpenPositions(data);
-            } catch (error) {
-                console.error('Error fetching open positions:', error);
-            }
-        };
+  useEffect(() => {
+    const fetchJobTitles = async () => {
+      const userId = localStorage.getItem('userId');
+      try {
+        const response = await axios.get(`http://localhost:5266/api/JobForm/OpenPos/${userId}`);
+        setJobTitles(response.data);
+      } catch (error) {
+        console.error('Error fetching job titles:', error);
+      }
+    };
 
-        fetchOpenPositions();
-    }, []);
+    fetchJobTitles();
+  }, []);
 
-    const handleJobSelect = async (event) => {
-        const jobId = event.target.value;
-        setSelectedJobId(jobId);
-
+  useEffect(() => {
+    if (jobId) {
+      const fetchCandidates = async () => {
         try {
-            const response = await fetch(`http://localhost:5266/api/OpenPosCV/technical-interview-passed/${jobId}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch passed candidates');
-            }
-            const data = await response.json();
+          const response = await axios.get(`http://localhost:5266/api/OpenPosCV/technical-interview-passed-for-jobform/${jobId}`);
+          const fetchedCandidates = response.data;
 
-            // Fetch interview dates for each candidate
-            const candidatesWithDates = await Promise.all(data.map(async (candidate) => {
-                const dateResponse = await fetch(`http://localhost:5266/api/OpenPosCV/${candidate.id}/jobform/${jobId}/technical-assessment-date`);
-                if (!dateResponse.ok) {
-                    throw new Error(`Failed to fetch interview date for candidate ${candidate.id}`);
-                }
-                const dateData = await dateResponse.json();
-                candidate.interviewDate = dateData.data; // Assuming dateData.data contains the interview date string
-                return candidate;
-            }));
+          const interviewPromises = fetchedCandidates.map(candidate =>
+            axios.get(`http://localhost:5266/api/OpenPosCV/${candidate.id}/jobform/${jobId}/get-telephone-interview-date`)
+              .then(response => ({
+                ...candidate,
+                telephoneInterviewDate: response.data.data !== '0001-01-01T00:00:00' && !isNaN(Date.parse(response.data.data)) ? new Date(response.data.data) : null
+              }))
+              .catch(error => {
+                console.error(`Error fetching telephone interview date for candidate ${candidate.postCVId}:`, error);
+                return { telephoneInterviewDate: null };
+              })
+          );
 
-            setPassedCandidates(candidatesWithDates);
+          const candidatesWithInterviewDates = await Promise.all(interviewPromises);
+          setCandidates(candidatesWithInterviewDates);
         } catch (error) {
-            console.error('Error fetching passed candidates and interview dates:', error);
+          console.error('Error fetching candidates:', error);
         }
-    };
+      };
 
-    const handleShowContactInfo = async (userId) => {
-        try {
-            const response = await fetch(`http://localhost:5266/api/OpenPosCV/${userId}/contact-info`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch contact info');
-            }
-            const data = await response.json();
-            setSelectedCandidate(data);
-            setShowContactModal(true);
-        } catch (error) {
-            console.error('Error fetching contact info:', error);
-        }
-    };
+      fetchCandidates();
+    }
+  }, [jobId]);
 
-    const handleCloseContactModal = () => {
-        setSelectedCandidate(null);
-        setShowContactModal(false);
-    };
+  const handleShowContactInfo = async (candidate) => {
+    setSelectedCandidate(candidate);
+    try {
+      const response = await axios.get(`http://localhost:5266/api/OpenPosCV/${candidate.userId}/contact-info`);
+      setContactInfo(response.data);
+      setShowModal(true);
+    } catch (error) {
+      console.error('Error fetching contact info:', error);
+    }
+  };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return ''; // Handle case where dateString is undefined or null
+  const handleExportToExcel = async () => {
+    try {
+      if (jobId) {
+        const response = await axios.get(`http://localhost:5266/api/OpenPosCV/export-technical-interview-passed-for-jobform/${jobId}`, {
+          responseType: 'blob' // Ensure response is treated as a blob
+        });
 
-        // Assuming dateString is in the format "0001-01-01T00:00:00"
-        const date = new Date(dateString);
+        // Create a Blob object from the response data
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-        // Check if date is valid
-        if (isNaN(date.getTime())) {
-            return ''; // Handle case where date string is not valid
-        }
+        // Create a link element, click it, and remove it to trigger the download
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `TechnicalInterviewResults_${jobId}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      }
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+    }
+  };
 
-        // Format the date as month/day/year
-        const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-        return formattedDate;
-    };
+  return (
+    <Container className="mt-4">
+      <Navbar userType="hr" />
+      <Form.Group controlId="formJobTitle">
+        <Form.Label>Select Job Title</Form.Label>
+        <Form.Control as="select" value={jobId} onChange={e => setJobId(e.target.value)}>
+          <option value="">Select a Job Title</option>
+          {jobTitles.map(job => (
+            <option key={job.jobId} value={job.jobId}>{job.jobTitle}</option>
+          ))}
+        </Form.Control>
+      </Form.Group>
+      <Card>
+        <Card.Header>Technical Interview Results</Card.Header>
+        <Card.Body>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>CV</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Contact Info</th>
+              </tr>
+            </thead>
+            <tbody>
+              {candidates.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center">No candidates found</td>
+                </tr>
+              ) : (
+                candidates.map((candidate, index) => (
+                  <tr key={candidate.id}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <a href={candidate.filePath} target="_blank" rel="noopener noreferrer">
+                        View CV
+                      </a>
+                    </td>
+                    <td>{candidate.userFullName}</td>
+                    <td>{candidate.userEmail}</td>
+                    <td>
+                      <Button variant="info" onClick={() => handleShowContactInfo(candidate)}>
+                        Show Contact Info
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={4}></td>
+                <td>
+                  <Button variant="success" onClick={handleExportToExcel}>
+                    <BsFileExcel /> Export to Excel
+                  </Button>
+                </td>
+              </tr>
+            </tfoot>
+          </Table>
+        </Card.Body>
+      </Card>
 
-    const handleDateChange = (date) => {
-        setInterviewDate(date);
-    };
-
-    return (
-        <Container>
-            <Navbar userType="hr" />
-            <h1 className="text-center my-4">Technical Interview Results</h1>
-            <Row className="mb-4">
-                <Col>
-                    <Form.Select onChange={handleJobSelect}>
-                        <option>Select Job Title</option>
-                        {openPositions.map((position) => (
-                            <option key={position.jobId} value={position.jobId}>
-                                {position.jobTitle}
-                            </option>
-                        ))}
-                    </Form.Select>
-                </Col>
-            </Row>
-            <Row>
-                {passedCandidates.map((candidate) => (
-                    <Col key={candidate.id} md={4} className="mb-4">
-                        <Card>
-                            <Card.Body className="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <Card.Title>{candidate.userFullName}</Card.Title>
-                                    <p>Interview Date: {formatDate(candidate.interviewDate)}</p>
-                                </div>
-                                <FaInfoCircle
-                                    className="mx-2"
-                                    style={{ cursor: 'pointer', color: '#7C5ACB' }}
-                                    onClick={() => handleShowContactInfo(candidate.userId)}
-                                />
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
-
-            {/* Contact Info Modal */}
-            {selectedCandidate && (
-                <Modal show={showContactModal} onHide={handleCloseContactModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Contact Info</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p><strong>Full Name:</strong> {selectedCandidate.fullName}</p>
-                        <p><strong>Email:</strong> {selectedCandidate.email}</p>
-                        <p><strong>Phone Number:</strong> {selectedCandidate.phoneNumber}</p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseContactModal}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            )}
-        </Container>
-    );
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Contact Info</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {contactInfo && (
+            <>
+              <p><strong>Full Name:</strong> {contactInfo.fullName}</p>
+              <p><strong>Email:</strong> {contactInfo.email}</p>
+              <p><strong>Phone:</strong> {contactInfo.phoneNumber}</p>
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
+  );
 };
 
 export default TechResults;

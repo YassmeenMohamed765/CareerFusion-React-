@@ -1,338 +1,320 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, Modal, Button } from 'react-bootstrap';
-import { FaCalendarAlt, FaInfoCircle } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
+import { Container, Card, Button, Table, Form, Modal } from 'react-bootstrap';
+import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useParams } from 'react-router-dom';
 import Navbar from './Navbar';
 
 const TechSelProcess = () => {
-    const [openPositions, setOpenPositions] = useState([]);
-    const [selectedJobId, setSelectedJobId] = useState(null);
-    const [screenedCandidates, setScreenedCandidates] = useState([]);
-    const [checkedCandidates, setCheckedCandidates] = useState([]);
-    const [selectedCandidate, setSelectedCandidate] = useState(null);
-    const [showContactModal, setShowContactModal] = useState(false);
-    const [showHrMessageModal, setShowHrMessageModal] = useState(false);
-    const [showTechDatePicker, setShowTechDatePicker] = useState(false);
-    const [showPhysicalDatePicker, setShowPhysicalDatePicker] = useState(false);
-    const [technicalDate, setTechnicalDate] = useState(new Date());
-    const [physicalDate, setPhysicalDate] = useState(new Date());
-    const [hrMessage, setHrMessage] = useState('');
+  const { postId } = useParams(); // Assuming postId is the jobFormId in your context
+  const [jobId, setJobId] = useState(null);
+  const [jobTitles, setJobTitles] = useState([]);
+  const [candidates, setCandidates] = useState([]);
+  const [acceptedCandidates, setAcceptedCandidates] = useState([]); 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [technicalInterviewDate, setTechnicalInterviewDate] = useState(null);
+  const [physicalInterviewDate, setPhysicalInterviewDate] = useState(null);
+  const [validationError, setValidationError] = useState('');
+  const [statusModal, setStatusModal] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
+  const [statusCandidate, setStatusCandidate] = useState(null);
 
-    useEffect(() => {
-        const fetchOpenPositions = async () => {
-            try {
-                const response = await fetch(`http://localhost:5266/api/JobForm/all-open-positions`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch open positions');
-                }
-                const data = await response.json();
-                setOpenPositions(data);
-            } catch (error) {
-                console.error('Error fetching open positions:', error);
-            }
-        };
-
-        fetchOpenPositions();
-    }, []);
-
-    useEffect(() => {
-        if (selectedJobId) {
-            const fetchScreenedCandidates = async () => {
-                try {
-                    const response = await fetch(`http://localhost:5266/api/OpenPosCV/telephone-interview-passed/${selectedJobId}`);
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch screened candidates');
-                    }
-                    const data = await response.json();
-                    const candidatesWithAcceptance = data.map(candidate => ({
-                        ...candidate,
-                        accepted: false, // Initially, no candidates are accepted
-                    }));
-                    setScreenedCandidates(candidatesWithAcceptance);
-    
-                    // Fetch the list of checked candidates from the server
-                    const checkedResponse = await fetch(`http://localhost:5266/api/OpenPosCV/technical-interview-passed-for-jobform/${selectedJobId}`);
-                    if (!checkedResponse.ok) {
-                        throw new Error('Failed to fetch checked candidates');
-                    }
-                    const checkedData = await checkedResponse.json();
-                    setCheckedCandidates(checkedData.map(candidate => candidate.id));
-                } catch (error) {
-                    console.error('Error fetching screened candidates:', error);
-                }
-            };
-    
-            fetchScreenedCandidates();
-        }
-    }, [selectedJobId]); // Depend on selectedJobId to trigger the effect
-    
-    useEffect(() => {
-        if (checkedCandidates.length > 0) {
-            const updatedCandidates = screenedCandidates.map(candidate => ({
-                ...candidate,
-                accepted: checkedCandidates.includes(candidate.id),
-            }));
-            setScreenedCandidates(updatedCandidates);
-        }
-    }, [checkedCandidates, screenedCandidates]); // Depend on checkedCandidates and screenedCandidates
-    
-    const handleJobSelect = (event) => {
-        const jobId = event.target.value;
-        setSelectedJobId(jobId);
+  useEffect(() => {
+    const fetchJobTitles = async () => {
+      const userId = localStorage.getItem('userId');
+      try {
+        const response = await axios.get(`http://localhost:5266/api/JobForm/OpenPos/${userId}`);
+        setJobTitles(response.data);
+      } catch (error) {
+        console.error('Error fetching job titles:', error);
+      }
     };
 
-    const handleToggleTechnicalInterview = async () => {
+    fetchJobTitles();
+  }, []);
+
+  useEffect(() => {
+    if (jobId) {
+      const fetchCandidates = async () => {
         try {
-            if (!selectedCandidate) {
-                console.error('No candidate selected');
-                return;
-            }
+          const response = await axios.get(`http://localhost:5266/api/OpenPosCV/telephone-interview-passed/${jobId}`);
+          const fetchedCandidates = response.data;
 
-            const requestBody = {
-                passed: !selectedCandidate.accepted,
-                hrMessage: hrMessage,
-            };
-
-            const response = await fetch(`http://localhost:5266/api/OpenPosCV/${selectedJobId}/${selectedCandidate.id}/toggle-technical-interview`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Failed to toggle technical interview: ${response.status} - ${errorText}`);
-            }
-
-            const updatedCandidates = screenedCandidates.map(candidate => {
-                if (candidate.id === selectedCandidate.id) {
-                    const newAcceptedStatus = !checkedCandidates.includes(candidate.id);
-                    return { ...candidate, accepted: newAcceptedStatus };
-                }
-                return candidate;
-            });
-
-            setScreenedCandidates(updatedCandidates);
-
-            const updatedCheckedCandidates = updatedCandidates.filter(candidate => candidate.accepted).map(candidate => candidate.id);
-            setCheckedCandidates(updatedCheckedCandidates);
-            console.log('Updated checked candidates:', updatedCheckedCandidates);
-
-            setShowHrMessageModal(false);
-            setSelectedCandidate(null);
-            setHrMessage('');
-        } catch (error) {
-            console.error('Error toggling technical interview:', error);
-        }
-    };
-
-    const handleShowContactInfo = async (userId) => {
-        try {
-            const response = await fetch(`http://localhost:5266/api/OpenPosCV/${userId}/contact-info`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch contact info');
-            }
-            const data = await response.json();
-            setSelectedCandidate(data);
-            setShowContactModal(true);
-        } catch (error) {
-            console.error('Error fetching contact info:', error);
-        }
-    };
-
-    const handleCloseContactModal = () => {
-        setSelectedCandidate(null);
-        setShowContactModal(false);
-    };
-
-    const handleShowHrMessageModal = (candidate) => {
-        setSelectedCandidate(candidate);
-        setShowHrMessageModal(true);
-    };
-
-    const handleCloseHrMessageModal = () => {
-        setSelectedCandidate(null);
-        setShowHrMessageModal(false);
-    };
-
-    const handleSetInterviewDates = async () => {
-        if (!selectedCandidate) {
-            console.error('No candidate selected');
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://localhost:5266/api/OpenPosCV/${selectedCandidate.id}/jobform/${selectedJobId}/set-technical-interview-date`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    technicalAssessmentDate: technicalDate.toISOString(), // Convert date to ISO string
-                    physicalInterviewDate: physicalDate.toISOString(), // Convert date to ISO string
+          const interviewPromises = fetchedCandidates.map(candidate =>
+            Promise.all([
+              axios.get(`http://localhost:5266/api/OpenPosCV/${candidate.id}/jobform/${jobId}/technical-assessment-date`)
+                .then(response => ({
+                  technicalAssessmentDate: response.data.data !== '0001-01-01T00:00:00' && !isNaN(Date.parse(response.data.data)) ? new Date(response.data.data) : null
+                }))
+                .catch(error => {
+                  console.error(`Error fetching technical assessment date for candidate ${candidate.postCVId}:`, error);
+                  return { technicalAssessmentDate: null };
                 }),
-            });
+              axios.get(`http://localhost:5266/api/OpenPosCV/${candidate.id}/jobform/${jobId}/physical-interview-date`)
+                .then(response => ({
+                  physicalInterviewDate: response.data.data !== '0001-01-01T00:00:00' && !isNaN(Date.parse(response.data.data)) ? new Date(response.data.data) : null
+                }))
+                .catch(error => {
+                  console.error(`Error fetching physical interview date for candidate ${candidate.postCVId}:`, error);
+                  return { physicalInterviewDate: null };
+                })
+            ]).then(([technicalAssessment, physicalInterview]) => ({
+              ...candidate,
+              ...technicalAssessment,
+              ...physicalInterview
+            }))
+          );
 
-            if (!response.ok) {
-                throw new Error('Failed to set interview dates');
-            }
+          const candidatesWithInterviewDates = await Promise.all(interviewPromises);
+          setCandidates(candidatesWithInterviewDates);
 
-            console.log('Interview dates set successfully');
-            setShowTechDatePicker(false);
-            setShowPhysicalDatePicker(false);
+          // Fetch accepted candidates
+          const acceptedResponse = await axios.get(`http://localhost:5266/api/OpenPosCV/technical-interview-passed-for-jobform/${jobId}`);
+          setAcceptedCandidates(acceptedResponse.data);
         } catch (error) {
-            console.error('Error setting interview dates:', error);
+          console.error('Error fetching candidates:', error);
         }
-    };
+      };
 
-    const handleTechDateChange = (date) => {
-        setTechnicalDate(date); // Update technicalDate state
-    };
+      fetchCandidates();
+    }
+  }, [jobId]);
 
-    const handlePhysicalDateChange = (date) => {
-        setPhysicalDate(date); // Update physicalDate state
-    };
+  const handleSetInterviewDateClick = (candidate) => {
+    setSelectedCandidate(candidate);
+    setTechnicalInterviewDate(candidate.technicalAssessmentDate || null);
+    setPhysicalInterviewDate(candidate.physicalInterviewDate || null);
+    setValidationError('');
+    setShowModal(true);
+  };
 
-    return (
-        <Container>
-            <Navbar userType="hr" />
-            <Row className="mb-4" style={{ padding: '30px' }}>
-                <Col>
-                    <Form.Select onChange={handleJobSelect}>
-                        <option>Select Job Title</option>
-                        {openPositions.map((position) => (
-                            <option key={position.jobId} value={position.jobId}>
-                                {position.jobTitle}
-                            </option>
-                        ))}
-                    </Form.Select>
-                </Col>
-            </Row>
-            <Row>
-                {screenedCandidates.map((candidate) => (
-                    <Col key={candidate.id} md={12} className="mb-4">
-                        <Card>
-                            <Card.Body className="d-flex align-items-center">
-                                <Form.Check
-                                    type="checkbox"
-                                    checked={candidate.accepted}
-                                    onChange={() => handleShowHrMessageModal(candidate)}
-                                    label={candidate.userFullName}
-                                />
-                                <div className="ms-auto d-flex align-items-center">
-                                    <FaCalendarAlt
-                                        className="mx-2"
-                                        style={{ cursor: 'pointer', color: '#7C5ACB' }}
-                                        onClick={() => { setSelectedCandidate(candidate); setShowTechDatePicker(true); }}
-                                    />
-                                    <FaCalendarAlt
-                                        className="mx-2"
-                                        style={{ cursor: 'pointer', color: '#7C5ACB' }}
-                                        onClick={() => { setSelectedCandidate(candidate); setShowPhysicalDatePicker(true); }}
-                                    />
-                                    <FaInfoCircle
-                                        className="mx-2"
-                                        style={{ cursor: 'pointer', color: '#7C5ACB' }}
-                                        onClick={() => handleShowContactInfo(candidate.userId)}
-                                    />
-                                </div>
-                            </Card.Body>
-                            <Card.Body>
-                                <div>
-                                    <strong>Technical Interview Date: </strong>{candidate.technicalAssessmentDate ? new Date(candidate.technicalAssessmentDate).toLocaleString() : 'Not set'}
-                                </div>
-                                <div>
-                                    <strong>Physical Interview Date: </strong>{candidate.physicalInterviewDate ? new Date(candidate.physicalInterviewDate).toLocaleString() : 'Not set'}
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
-            {selectedCandidate && (
-                <Modal show={showContactModal} onHide={handleCloseContactModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Contact Info</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p><strong>Full Name:</strong> {selectedCandidate.fullName}</p>
-                        <p><strong>Email:</strong> {selectedCandidate.email}</p>
-                        <p><strong>Phone Number:</strong> {selectedCandidate.phoneNumber}</p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseContactModal}>
-                            Close
+  const handleSaveInterviewDate = async () => {
+    if (!technicalInterviewDate || !physicalInterviewDate) {
+      setValidationError('Both technical and physical interview dates are required.');
+      return;
+    }
+
+    if (!selectedCandidate) return;
+
+    try {
+      const techDate = technicalInterviewDate ? new Date(technicalInterviewDate.getTime() - (technicalInterviewDate.getTimezoneOffset() * 60000)).toISOString() : null;
+      const physDate = physicalInterviewDate ? new Date(physicalInterviewDate.getTime() - (physicalInterviewDate.getTimezoneOffset() * 60000)).toISOString() : null;
+
+      await axios.put(`http://localhost:5266/api/OpenPosCV/${selectedCandidate.id}/jobform/${jobId}/set-technical-interview-date`, null, {
+        params: {
+          technicalAssessmentDate: techDate,
+          physicalInterviewDate: physDate
+        }
+      });
+
+      const techResponse = await axios.get(`http://localhost:5266/api/OpenPosCV/${selectedCandidate.id}/jobform/${jobId}/technical-assessment-date`);
+      const physicalResponse = await axios.get(`http://localhost:5266/api/OpenPosCV/${selectedCandidate.id}/jobform/${jobId}/physical-interview-date`);
+
+      setCandidates(prevCandidates =>
+        prevCandidates.map(candidate =>
+          candidate.postCVId === selectedCandidate.postCVId
+            ? {
+              ...candidate,
+              technicalAssessmentDate: techResponse.data.data !== '0001-01-01T00:00:00' ? new Date(techResponse.data.data) : null,
+              physicalInterviewDate: physicalResponse.data.data !== '0001-01-01T00:00:00' ? new Date(physicalResponse.data.data) : null
+            }
+            : candidate
+        )
+      );
+
+      setShowModal(false);
+      setSelectedCandidate(null);
+    } catch (error) {
+      console.error('Error setting interview date:', error);
+    }
+  };
+
+  const handleToggleStatusClick = (candidate) => {
+    setStatusCandidate(candidate);
+    setStatusMessage('');
+    setStatusModal(true);
+  };
+
+  const handleSaveStatus = async () => {
+    if (!statusCandidate) return;
+
+    const endpoint = `http://localhost:5266/api/OpenPosCV/${jobId}/${statusCandidate.id}/toggle-technical-interview`;
+
+    try {
+      await axios.put(endpoint, {
+        passed: true,
+        hrMessage: statusMessage
+      });
+
+      setCandidates(prevCandidates =>
+        prevCandidates.map(candidate =>
+          candidate.id === statusCandidate.id
+            ? { ...candidate, passed: true, hrMessage: statusMessage }
+            : candidate
+        )
+      );
+
+      // Also add the candidate to the accepted list if not already there
+      if (!acceptedCandidates.some(ac => ac.id === statusCandidate.id)) {
+        setAcceptedCandidates(prevAcceptedCandidates => [...prevAcceptedCandidates, { ...statusCandidate, passed: true }]);
+      }
+
+      setStatusModal(false);
+      setStatusCandidate(null);
+    } catch (error) {
+      console.error('Error toggling status:', error);
+    }
+  };
+
+  const formatDateTime = (date) => {
+    if (!date) return 'Set Interview Date';
+    return date.toLocaleString();
+  };
+
+  const isAccepted = (id) => {
+    return acceptedCandidates.some(candidate => candidate.id === id);
+  };
+
+  return (
+    <Container className="mt-4">
+      <Navbar userType="hr" />
+      <Form.Group controlId="formJobTitle">
+        <Form.Label>Select Job Title</Form.Label>
+        <Form.Control as="select" value={jobId} onChange={e => setJobId(e.target.value)}>
+          <option value="">Select a Job Title</option>
+          {jobTitles.map(job => (
+            <option key={job.jobId} value={job.jobId}>{job.jobTitle}</option>
+          ))}
+        </Form.Control>
+      </Form.Group>
+      <Card>
+        <Card.Header>Selection Process</Card.Header>
+        <Card.Body>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>CV</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Technical Assessment Date</th>
+                <th>Physical Interview Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {candidates.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center">No candidates found</td>
+                </tr>
+              ) : (
+                candidates.map((candidate, index) => (
+                  <tr key={candidate.postCVId}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <a href={candidate.filePath} target="_blank" rel="noopener noreferrer">
+                        View CV
+                      </a>
+                    </td>
+                    <td>{candidate.userFullName}</td>
+                    <td>{candidate.userEmail}</td>
+                    <td>{formatDateTime(candidate.technicalAssessmentDate)}</td>
+                    <td>{formatDateTime(candidate.physicalInterviewDate)}</td>
+                    <td>
+                      {isAccepted(candidate.id) ? (
+                        <Button variant="success" size="sm" onClick={() => handleToggleStatusClick(candidate)}>
+                          Accepted
                         </Button>
-                    </Modal.Footer>
-                </Modal>
-            )}
-            {selectedCandidate && (
-                <Modal show={showHrMessageModal} onHide={handleCloseHrMessageModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>HR Message</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form.Group controlId="formHrMessage">
-                            <Form.Label>HR Message</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={hrMessage}
-                                onChange={(e) => setHrMessage(e.target.value)}
-                            />
-                        </Form.Group>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseHrMessageModal}>
-                            Close
+                      ) : (
+                        <Button variant="outline-success" size="sm" onClick={() => handleToggleStatusClick(candidate)}>
+                          Accept
                         </Button>
-                        <Button variant="primary" onClick={handleToggleTechnicalInterview}>
-                            Save Changes
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            )}
-            {selectedCandidate && (
-                <>
-                    <Modal show={showTechDatePicker} onHide={() => setShowTechDatePicker(false)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Select Technical Interview Date</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <DatePicker selected={technicalDate} onChange={handleTechDateChange} showTimeSelect />
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={() => setShowTechDatePicker(false)}>
-                                Close
-                            </Button>
-                            <Button variant="primary" onClick={handleSetInterviewDates}>
-                                Save Changes
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                    <Modal show={showPhysicalDatePicker} onHide={() => setShowPhysicalDatePicker(false)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Select Physical Interview Date</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <DatePicker selected={physicalDate} onChange={handlePhysicalDateChange} showTimeSelect />
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={() => setShowPhysicalDatePicker(false)}>
-                                Close
-                            </Button>
-                            <Button variant="primary" onClick={handleSetInterviewDates}>
-                                Save Changes
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                </>
-            )}
-        </Container>
-    );
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </Table>
+        </Card.Body>
+      </Card>
+
+      {/* Modal for setting interview dates */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Set Interview Dates</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group controlId="formTechnicalDate">
+            <Form.Label>Technical Assessment Date</Form.Label>
+            <br />
+            <DatePicker
+              selected={technicalInterviewDate}
+              onChange={date => setTechnicalInterviewDate(date)}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={30}
+              timeCaption="time"
+              dateFormat="MMMM d, yyyy h:mm aa"
+              className="form-control"
+            />
+          </Form.Group>
+          <Form.Group controlId="formPhysicalDate">
+            <Form.Label>Physical Interview Date</Form.Label>
+            <br />
+            <DatePicker
+              selected={physicalInterviewDate}
+              onChange={date => setPhysicalInterviewDate(date)}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={30}
+              timeCaption="time"
+              dateFormat="MMMM d, yyyy h:mm aa"
+              className="form-control"
+            />
+          </Form.Group>
+          {validationError && <p className="text-danger">{validationError}</p>}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSaveInterviewDate}>
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal for toggling status */}
+      <Modal show={statusModal} onHide={() => setStatusModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Toggle Status</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group controlId="formStatusMessage">
+            <Form.Label>HR Message</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={statusMessage}
+              onChange={(e) => setStatusMessage(e.target.value)}
+              placeholder="Enter a message (optional)"
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setStatusModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSaveStatus}>
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
+  );
 };
 
 export default TechSelProcess;
