@@ -1,15 +1,22 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap'; // Import components from react-bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './Navbar.css'; // Import the CSS file
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 const CustomNavbar = ({ userType }) => {
   const location = useLocation();
 
   const isHiringPlanActive = ['/setTimeline', '/define-needs', '/openPositions', '/postview', '/existing-cvs'].includes(location.pathname);
   const isRecruitmentActive = ['/cvScreening', '/prepareForms', '/selecProcess', '/viewResults', '/techProcess', '/techResults'].includes(location.pathname);
+
+  const handleLogout = () => {
+    // Perform logout actions if needed (e.g., clearing session/local storage)
+    // Redirect to login page
+    // Example: window.location.href = '/login';
+  };
 
   return (
     <Navbar expand="lg" className="custom-navbar fixed-top">
@@ -94,12 +101,11 @@ const CustomNavbar = ({ userType }) => {
                     View Result
                   </NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Link as={NavLink} to="/appraisal" className="custom-link" activeClassName="active">
-                  Appraisal
+                <Nav.Link as={Link} to="/login" onClick={handleLogout} className="custom-link">
+                  Logout
                 </Nav.Link>
               </>
             )}
-           
           </Nav>
         </Navbar.Collapse>
       </Container>
