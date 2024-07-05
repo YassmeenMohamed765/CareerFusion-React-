@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap'; // Import components from react-bootstrap
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { FaHome, FaUserCircle, FaFileContract, FaChartLine, FaFileAlt, FaChevronDown } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.css';
-import './Navbar.css'; // Import the CSS file
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import './Navbar.css';
 
 const CustomNavbar = ({ userType }) => {
   const location = useLocation();
@@ -21,38 +21,40 @@ const CustomNavbar = ({ userType }) => {
   return (
     <Navbar expand="lg" className="custom-navbar fixed-top">
       <Container>
-        <Navbar.Brand href="/" className="custom-brand">
-          <i className="fa-solid fa-people-arrows" style={{ color: '#4655f7' }}></i> CareerFusion
+        <Navbar.Brand as={NavLink} to="/" className="custom-brand">
+        <i className="fa-solid fa-people-arrows" style={{ color: '#4655f7' }}></i>CareerFusion
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ml-auto custom-nav">
+          <Nav className="ml-auto custom-nav"> {/* Ensure ml-auto for aligning right */}
             {userType === 'hr' && (
               <Nav.Link as={NavLink} to="/home" className="custom-link" activeClassName="active">
-                Home
-              </Nav.Link>
-            )}
-            {userType === 'candidate' && (
-              <Nav.Link as={NavLink} to="/userHome" className="custom-link" activeClassName="active">
-                Home
+                <FaHome style={{ marginRight: '5px', fontSize: '20px' }} /> Home
               </Nav.Link>
             )}
             {userType === 'candidate' && (
               <>
+                <Nav.Link as={NavLink} to="/userHome" className="custom-link" activeClassName="active">
+                  <FaHome style={{ marginRight: '5px', fontSize: '20px' }} /> Home
+                </Nav.Link>
                 <Nav.Link as={NavLink} to="/profileview" className="custom-link" activeClassName="active">
-                  My Profile
+                  <FaUserCircle style={{ marginRight: '5px', fontSize: '20px' }} /> My Profile
                 </Nav.Link>
                 <Nav.Link as={NavLink} to="/dashboard" className="custom-link" activeClassName="active">
-                  Dashboard
+                  <FaChartLine style={{ marginRight: '5px', fontSize: '20px' }} /> Dashboard
                 </Nav.Link>
               </>
             )}
             {userType === 'hr' && (
               <>
                 <Nav.Link as={NavLink} to="/hrprofileview" className="custom-link" activeClassName="active">
-                  My Profile
+                  <FaUserCircle style={{ marginRight: '5px', fontSize: '20px' }} /> My Profile
                 </Nav.Link>
-                <NavDropdown title="Hiring Plan" id="hiring-plan-dropdown" className={`custom-link ${isHiringPlanActive ? 'active' : ''}`}>
+                <NavDropdown
+                  title={<span><FaFileAlt style={{ marginRight: '5px', fontSize: '20px' }} />Hiring Plan</span>}
+                  id="hiring-plan-dropdown"
+                  className={`custom-link ${isHiringPlanActive ? 'active' : ''}`}
+                >
                   <NavDropdown.Item as={NavLink} to="/setTimeline">
                     Set Timeline
                   </NavDropdown.Item>
@@ -74,7 +76,11 @@ const CustomNavbar = ({ userType }) => {
                   </NavDropdown.Item>
                 </NavDropdown>
                 
-                <NavDropdown title="Recruitment" id="hiring-plan-dropdown" className={`custom-link ${isRecruitmentActive ? 'active' : ''}`}>
+                <NavDropdown
+                  title={<span><FaFileContract style={{ marginRight: '5px', fontSize: '20px' }} />Recruitment</span>}
+                  id="recruitment-dropdown"
+                  className={`custom-link ${isRecruitmentActive ? 'active' : ''}`}
+                >
                   <NavDropdown.Item as={NavLink} to="/cvScreening">
                     CV Screening
                   </NavDropdown.Item>
@@ -98,7 +104,10 @@ const CustomNavbar = ({ userType }) => {
                     View Result
                   </NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Link as={Link} to="/login" onClick={handleLogout} className="custom-link">
+                <Nav.Link as={NavLink} to="/appraisal" className="custom-link" activeClassName="active">
+                  <FaChartLine style={{ marginRight: '5px', fontSize: '20px' }} /> Appraisal
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/login" onClick={handleLogout} className="custom-link" style={{color:'red'}}>
                   Logout
                 </Nav.Link>
               </>

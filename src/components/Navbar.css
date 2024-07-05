@@ -1,65 +1,76 @@
-/* navbar.css */
+/* Navbar.css */
 body, html {
-    margin: 0;
-    padding: 0;
-    padding-top: 10px; /* Adjust this value based on the height of your navbar */
-  }
-  
-  .navbar {
-    margin-bottom: 0;
-    border-radius: 0;
-  }
-  
-  footer {
-    background-color: #f2f2f2;
-    padding: 25px;
-  }
-  
-  .custom-navbar {
-    background-color: white;
-    z-index: 1030; /* Ensure the navbar is above other content */
-    position: fixed; /* Fix the navbar at the top */
-    width: 100%; /* Ensure the navbar spans the full width */
-    top: 0; /* Align it to the top of the page */
-    height: 50px; /* Ensure the height is consistent */
-  }
-  
-  .custom-nav .nav-link {
-    color: rgb(80, 75, 75);
-    font-size: 19px;
-  }
-  
-  .custom-brand {
-    color: rgb(80, 75, 75);
-    font-size: 29px;
-    font-weight: bold;
-  }
-  
-  .custom-nav {
-    margin-left: auto;
-  }
-  
-  .custom-link {
-    margin-right: 20px;
-  }
-  
-  .jumbotronn {
-    background-color: lightgray;
-    width: 100%;
-    padding: 2rem 0;
-    margin-bottom: 0;
-  }
+  margin: 0;
+  padding: 0;
+  padding-top: 8px;
+}
 
-  .custom-link.active {
-    font-weight: bold;
-    color: #4655f7; /* Adjust color as needed */
-    border-bottom: 2px solid #4655f7; /* Optional underline */
-  }
-  
+.navbar {
+  margin-bottom: 20px;
+  border-radius: 0;
+}
 
-  .dropdown-header {
-    font-weight: bold;
-    font-size: 1.2em;
-   /* Customize this color as needed */
-  }
+.custom-navbar {
+  background-color: white;
+  z-index: 1030;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  height: 50px;
+}
+
+.custom-nav .nav-link {
+  color: rgb(80, 75, 75);
+  font-size: 19px;
+}
+
+.custom-brand {
+  color: rgb(80, 75, 75);
+  font-size: 29px;
+  font-weight: bold;
+}
+
+.custom-nav {
+  margin-left: auto; /* Align items to the right */
+  padding-left: 50px;
   
+}
+
+.custom-nav .nav-link {
+  color: rgb(80, 75, 75);
+  font-size: 16px; /* Adjust font size as needed */
+}
+
+.custom-link {
+  margin-left: 10px; /* Adjust spacing between links */
+  display: flex;
+  align-items: center; /* Center align icon and text */
+}
+
+.custom-link.active {
+  font-weight: bold;
+  color: #4655f7;
+  border-bottom: 2px solid #4655f7;
+}
+
+/* Ensure links are aligned to the right */
+.custom-nav {
+  margin-left: auto;
+}
+
+/* Increase icon size */
+.custom-link svg {
+  font-size: 20px; /* Adjust icon size as needed */
+}
+
+
+.custom-link.active {
+  font-weight: bold;
+  color: #4655f7;
+  border-bottom: 2px solid #4655f7;
+}
+
+.dropdown-header {
+  font-weight: bold;
+  font-size: 1.2em;
+}
