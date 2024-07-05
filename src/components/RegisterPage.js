@@ -154,27 +154,30 @@ function RegisterPage() {
                 <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </Form.Group>
               <div className="checkbox-container mb-2">
-                <Form.Check type="checkbox" checked={agreeTerms} onChange={() => setAgreeTerms(!agreeTerms)} label="By checking the box, you agree to our Terms and Conditions" />
+                {/* <Form.Check type="checkbox" checked={agreeTerms} onChange={() => setAgreeTerms(!agreeTerms)} label="By checking the box, you agree to our Terms and Conditions" /> */}
               </div>
               <Row>
-                <Button type="submit" variant="primary" className="btn-lg btn-block mb-2">Register</Button>
+                <Button type="submit" variant="primary" className="mt-4 btn-lg btn-block mb-2">Register</Button>
               </Row>
-              <div className="divider d-flex align-items-center my-4">
+              {/* <div className="divider d-flex align-items-center my-4">
                 <p className="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
-              </div>
-              <Row>
+              </div> */}
+              {/* <Row>
                 <Button variant="primary" className="btn-lg btn-block mb-2" onClick={() => login()} style={{ backgroundColor: '#db4437' }}>
                   <FontAwesomeIcon icon={faGoogle} className="me-2" />Continue with Google
                 </Button>
-              </Row>
-              <Row>
-                <Button variant="primary" href="#!" className="btn-lg btn-block mb-2" style={{ backgroundColor: '#3b5998' }}>
-                  <FontAwesomeIcon icon={faFacebookF} className="me-2" />Continue with Facebook
-                </Button>
-              </Row>
+              </Row> */}
+              {/* <Row> */}
+                {/* <Button variant="primary" href="#!" className="btn-lg btn-block mb-2" style={{ backgroundColor: '#3b5998' }}> */}
+                  {/* <FontAwesomeIcon icon={faFacebookF} className="me-2" />Continue with Facebook */}
+                {/* </Button> */}
+              {/* </Row> */}
             </Form>
             <p className="d-flex justify-content-center mt-4">
               Already have an account? <Link to="/login">Log In</Link>
+            </p>
+            <p className="d-flex justify-content-center mt-4">
+            Login As Admin?  <Link to="/adminLogin">login</Link>
             </p>
           </Col>
         </Row>

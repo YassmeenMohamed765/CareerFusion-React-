@@ -52,16 +52,16 @@ function RoleSelectionPage  ()  {
           <Col>
             <div className="form-container">
               <div className="form-content">
-                <h1 className="role-prompt mb-4">Choose your role</h1>
+              <h4 className="role-prompt mb-4">We are pleased to inform you that you have been assigned to the Corporate HR Department, effective immediately. We are confident that your skills and experience will be a valuable addition to our team. Welcome to your new role!</h4>
                 {/* Adjust the button onClick handlers to pass the correct role names */}
                 <Row>
-                <Button variant="primary"className="btn-lg btn-block mb-3" onClick={() => navigate('/userHome')}>User</Button>
+                {/* <Button variant="primary"className="btn-lg btn-block mb-3" onClick={() => navigate('/userHome')}>User</Button> */}
                 </Row>
-                <div className="divider d-flex align-items-center my-4">
-                <p className="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
-              </div>
+                {/* <div className="divider d-flex align-items-center my-4"> */}
+                {/* <p className="text-center fw-bold mx-3 mb-0 text-muted">OR</p> */}
+              {/* </div> */}
                 <Row>
-                <Button variant="primary"className="btn-lg btn-block mb-4" onClick={() => handleRoleSelection('HR')}>Corporate HR Department</Button>
+                <Button variant="primary"className="btn-lg btn-block mb-4" onClick={() => handleRoleSelection('HR')}>Confirm</Button>
                 </Row>
               </div>
             </div>
