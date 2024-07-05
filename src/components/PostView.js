@@ -118,7 +118,7 @@ const PostView = ({ limit }) => {
         <Row>
           {displayedPosts.map((post) => (
             <Col key={post.postId} md={6} lg={4} className="mb-4">
-              <Card className="custom-card" onClick={() => handleCardClick(post.postId)}>
+              <Card className="custom-card" onClick={() => handleCardClick(post.postId)}style={{ backgroundColor: '#DED8F3', padding: '20px', borderRadius: '10px' }}>
                 <Card.Img
                   variant="top"
                   src={postImages[post.postId] || process.env.PUBLIC_URL + '/images/post.jpeg'}
