@@ -30,7 +30,7 @@ const handleLogin = async (e) => {
       console.log('Login successful:', response.data);
       localStorage.setItem('userId', response.data.userId);
       console.log(localStorage.getItem('userId'))
-      navigate('/userHome');
+      navigate('/home');
       window.alert('Login successful!');
       
     } else {

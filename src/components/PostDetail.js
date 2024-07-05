@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Card, Row, Col, Table, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import './post.css';
 
 const PostDetail = () => {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
   const [cvs, setCvs] = useState([]);
+  const [postImages, setPostImages] = useState([]);
   const [showCheckboxes, setShowCheckboxes] = useState(false);
   const [selectedCvs, setSelectedCvs] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -15,8 +16,23 @@ const PostDetail = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:5266/api/Post/${postId}`);
-        setPost(response.data);
+        const userId = localStorage.getItem('userId');
+        console.log(`Fetching posts for userId: ${userId}`);
+        const response = await axios.get(`http://localhost:5266/api/Post/HrPost/${userId}`);
+        const posts = response.data;
+        const currentPost = posts.find(post => post.postId.toString() === postId);
+
+        if (currentPost) {
+          console.log('Full post data retrieved:', currentPost);
+          setPost(currentPost);
+
+          if (currentPost.postPictureIds && currentPost.postPictureIds.length > 0) {
+            console.log('Post picture IDs:', currentPost.postPictureIds);
+            await fetchPostImages(currentPost.postPictureIds);
+          } else {
+            console.log('No postPictureIds found in the response.');
+          }
+        }
       } catch (error) {
         console.error('Error fetching post:', error);
       }
@@ -24,10 +40,31 @@ const PostDetail = () => {
 
     const fetchCvs = async () => {
       try {
+        console.log(`Fetching CVs for postId: ${postId}`);
         const response = await axios.get(`http://localhost:5266/api/CVUpload/${postId}/cv-paths`);
+        console.log('CVs data retrieved:', response.data);
         setCvs(response.data);
       } catch (error) {
         console.error('Error fetching CVs:', error);
+      }
+    };
+
+    const fetchPostImages = async (pictureIds) => {
+      try {
+        const imagePromises = pictureIds.map(id => 
+          axios.get(`http://localhost:5266/api/PictureUpload/${id}/picture-path`).then(response => {
+            console.log(`Image URL retrieved for pictureId ${id}:`, response.data);
+            return response.data;
+          }).catch(error => {
+            console.error(`Error fetching picture for pictureId ${id}:`, error);
+            return null;
+          })
+        );
+        const images = await Promise.all(imagePromises);
+        setPostImages(images.filter(img => img !== null));
+        console.log('Post images:', images);
+      } catch (error) {
+        console.error('Error fetching post images:', error);
       }
     };
 
@@ -82,8 +119,6 @@ const PostDetail = () => {
     }
   };
 
-  
-
   return (
     <Container className="post-detail-container mt-4">
       <Card className="mb-4">
@@ -96,12 +131,24 @@ const PostDetail = () => {
               <Card.Text>{post.content}</Card.Text>
             </Col>
             <Col md={5}>
-              <Card.Img
-                variant="top"
-                src={post.picture || process.env.PUBLIC_URL + '/images/post.jpeg'}
-                alt="Post image"
-                style={{ maxHeight: '400px', objectFit: 'cover', width: '100%' }}
-              />
+              {postImages.length > 0 ? (
+                postImages.map((image, index) => (
+                  <Card.Img
+                    key={index}
+                    variant="top"
+                    src={image}
+                    alt="Post image"
+                    style={{ maxHeight: '400px', objectFit: 'cover', width: '100%' }}
+                  />
+                ))
+              ) : (
+                <Card.Img
+                  variant="top"
+                  src={process.env.PUBLIC_URL + '/images/post.jpeg'}
+                  alt="Post image"
+                  style={{ maxHeight: '400px', objectFit: 'cover', width: '100%' }}
+                />
+              )}
             </Col>
           </Row>
         </Card.Body>
@@ -186,7 +233,6 @@ const PostDetail = () => {
               )}
             </tbody>
           </Table>
-          
         </Card.Body>
       </Card>
     </Container>

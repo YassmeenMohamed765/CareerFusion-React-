@@ -1,25 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Card, Table, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { FaFileExcel } from 'react-icons/fa';
 
-const AcceptedCandidates = () => {
+const AcceptedCandidates = ({ acceptedCandidates }) => {
   const { postId } = useParams();
-  const [acceptedCandidates, setAcceptedCandidates] = useState([]);
-
-  useEffect(() => {
-    const fetchAcceptedCandidates = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5266/api/CVUpload/technical-interview-passed/${postId}`);
-        setAcceptedCandidates(response.data);
-      } catch (error) {
-        console.error('Error fetching accepted candidates:', error);
-      }
-    };
-
-    fetchAcceptedCandidates();
-  }, [postId]);
 
   const handleExportToExcel = async () => {
     try {

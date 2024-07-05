@@ -145,7 +145,7 @@ const TechnicalInterview = () => {
 
       // Also add the candidate to the accepted list if not already there
       if (!acceptedCandidates.some(ac => ac.postCVId === statusCandidate.postCVId)) {
-        setAcceptedCandidates(prevAcceptedCandidates => [...prevAcceptedCandidates, statusCandidate]);
+        setAcceptedCandidates(prevAcceptedCandidates => [...prevAcceptedCandidates, { ...statusCandidate, passed: true }]);
       }
 
       setStatusModal(false);
@@ -175,7 +175,6 @@ const TechnicalInterview = () => {
             <thead>
               <tr>
                 <th>#</th>
-                {/* <th>Candidate</th> */}
                 <th>CV</th>
                 <th>Full Name</th>
                 <th>Email</th>
@@ -187,13 +186,12 @@ const TechnicalInterview = () => {
             <tbody>
               {candidates.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center">No candidates found</td>
+                  <td colSpan={7} className="text-center">No candidates found</td>
                 </tr>
               ) : (
                 candidates.map((candidate, index) => (
                   <tr key={candidate.postCVId}>
                     <td>{index + 1}</td>
-                    {/* <td>Candidate {index + 1}</td> */}
                     <td>
                       <a href={candidate.filePath} target="_blank" rel="noopener noreferrer">
                         View CV
@@ -227,7 +225,7 @@ const TechnicalInterview = () => {
         </Card.Body>
       </Card>
 
-      <AcceptedCandidates />
+      <AcceptedCandidates acceptedCandidates={acceptedCandidates} />
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>

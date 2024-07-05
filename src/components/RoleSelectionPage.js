@@ -34,7 +34,7 @@ function RoleSelectionPage  ()  {
       }
 
       console.log('Role added successfully!');
-      navigate('/hrHome'); // Navigate to the user home page or appropriate page
+      navigate('/home'); // Navigate to the user home page or appropriate page
     } catch (error) {
       console.error('Error during role assignment:', error);
       alert('An error occurred. Please try again.');
