@@ -24,18 +24,12 @@ const EmployeesCard = () => {
 
   const fetchEmployees = () => {
     const hrUserId = localStorage.getItem('userId');
-    axios.get(`http://localhost:5266/api/CVUpload/${hrUserId}/technical-interview-passed/all-posts`)
-      .then(response => {
-        setEmployees(response.data);
-      })
-      .catch(error => console.error('Error fetching employees:', error));
-      axios.get(`http://localhost:5266/api/OpenPosCV/${hrUserId}/technical-interview-passed`)
+    axios.get(`http://localhost:5266/api/OpenPosCV/${hrUserId}/technical-interview-passed`)
       .then(response => {
         setEmployees(response.data);
       })
       .catch(error => console.error('Error fetching employees:', error));
   };
-
 
   const fetchQuestions = (hrId) => {
     axios.get(`http://localhost:5266/api/Evaluations/${hrId}/questions`)
@@ -270,14 +264,15 @@ const EmployeesCard = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
       {evaluationResult && (
-        <Modal show={true} onHide={() => setEvaluationResult(null)}>
+        <Modal show={!!evaluationResult} onHide={() => setEvaluationResult(null)}>
           <Modal.Header closeButton>
             <Modal.Title>Evaluation Result</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Overall Score: {evaluationResult.overallScore.toFixed(2)}</p>
-            <p>Status: {evaluationResult.status}</p>
+            <p>Overall Score: {evaluationResult.overallScore}</p>
+            <p>Status: {evaluationResult.status ? 'Pass' : 'Fail'}</p>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setEvaluationResult(null)}>
