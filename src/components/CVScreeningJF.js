@@ -80,7 +80,7 @@ const CVScreeningJF = () => {
 
   const handleSkillsSubmit = async () => {
     try {
-      const response = await axios.post('https://cv-screening.onrender.com/match-cvs', { skills });
+      const response = await axios.post('https://cv-screening.onrender.com/get-matched-cvs', { skills });
       console.log('Skills submitted successfully:', response.data);
       setShowSkillsModal(false);
       fetchMatchedCVs();
