@@ -270,6 +270,22 @@ const EmployeesCard = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      {evaluationResult && (
+        <Modal show={true} onHide={() => setEvaluationResult(null)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Evaluation Result</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Overall Score: {evaluationResult.overallScore.toFixed(2)}</p>
+            <p>Status: {evaluationResult.status}</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setEvaluationResult(null)}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </Card>
   );
 };
