@@ -24,7 +24,8 @@ const ExistingCvs = () => {
   return (
     <Container>
       <Navbar userType="hr" />
-      <Row className="my-4">
+      <div style={{padding:"20px"}}>
+        <Row className="my-4">
         {cvs.map(cv => (
           <Col key={cv.userId} xs={12} md={6} lg={4} className="mb-4">
             <Card>
@@ -37,7 +38,8 @@ const ExistingCvs = () => {
             </Card>
           </Col>
         ))}
-      </Row>
+      </Row></div>
+      
     </Container>
   );
 };
