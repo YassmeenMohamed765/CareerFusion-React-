@@ -11,8 +11,9 @@ const TelInterviewResults = () => {
     useEffect(() => {
         // Fetch all open positions
         const fetchOpenPositions = async () => {
+            const userId = localStorage.getItem('userId');
             try {
-                const response = await fetch(`http://localhost:5266/api/JobForm/all-open-positions`);
+                const response = await fetch(`http://localhost:5266/api/JobForm/OpenPos/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch open positions');
                 }
@@ -48,7 +49,7 @@ const TelInterviewResults = () => {
     return (
         <Container>
             <Navbar userType="hr" /> {/* Ensure Navbar is within Router to enable routing */}
-            <Row className="mb-4" style={{padding:"20px"}}>
+            <Row className="mb-4" style={{padding:"25px"}}>
                 <Col>
                     <Form.Select onChange={handleJobSelect}>
                         <option>Select Job Title</option>

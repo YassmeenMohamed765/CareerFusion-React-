@@ -11,8 +11,9 @@ const SelectionTable = () => {
     useEffect(() => {
         // Fetch all open positions
         const fetchOpenPositions = async () => {
+            const userId = localStorage.getItem('userId');
             try {
-                const response = await fetch(`http://localhost:5266/api/JobForm/all-open-positions`);
+                const response = await fetch(`http://localhost:5266/api/JobForm/OpenPos/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch open positions');
                 }

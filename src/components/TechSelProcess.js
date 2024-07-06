@@ -11,7 +11,7 @@ const TechSelProcess = () => {
   const [jobId, setJobId] = useState(null);
   const [jobTitles, setJobTitles] = useState([]);
   const [candidates, setCandidates] = useState([]);
-  const [acceptedCandidates, setAcceptedCandidates] = useState([]); 
+  const [acceptedCandidates, setAcceptedCandidates] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [technicalInterviewDate, setTechnicalInterviewDate] = useState(null);
@@ -139,15 +139,16 @@ const TechSelProcess = () => {
 
   const handleSaveStatus = async () => {
     if (!statusCandidate) return;
-
+  
     const endpoint = `http://localhost:5266/api/OpenPosCV/${jobId}/${statusCandidate.id}/toggle-technical-interview`;
-
+  
     try {
-      await axios.put(endpoint, {
+      const response = await axios.put(endpoint, {
         passed: true,
         hrMessage: statusMessage
       });
-
+  
+      // Update candidates list with the updated status
       setCandidates(prevCandidates =>
         prevCandidates.map(candidate =>
           candidate.id === statusCandidate.id
@@ -155,19 +156,22 @@ const TechSelProcess = () => {
             : candidate
         )
       );
-
-      // Also add the candidate to the accepted list if not already there
+  
+      // Update acceptedCandidates list if the candidate is not already in the list
       if (!acceptedCandidates.some(ac => ac.id === statusCandidate.id)) {
-        setAcceptedCandidates(prevAcceptedCandidates => [...prevAcceptedCandidates, { ...statusCandidate, passed: true }]);
+        setAcceptedCandidates(prevAcceptedCandidates => [
+          ...prevAcceptedCandidates,
+          { ...statusCandidate, passed: true }
+        ]);
       }
-
+  
       setStatusModal(false);
       setStatusCandidate(null);
     } catch (error) {
       console.error('Error toggling status:', error);
     }
   };
-
+  
   const formatDateTime = (date) => {
     if (!date) return 'Set Interview Date';
     return date.toLocaleString();
@@ -177,10 +181,21 @@ const TechSelProcess = () => {
     return acceptedCandidates.some(candidate => candidate.id === id);
   };
 
+   // Function to toggle acceptance
+   const toggleAcceptance = (candidateId) => {
+    // Logic to toggle acceptance
+    // For example:
+    const updatedAccepted = isAccepted(candidateId) ?
+      acceptedCandidates.filter(candidate => candidate.id !== candidateId) :
+      [...acceptedCandidates, candidates.find(candidate => candidate.id === candidateId)];
+    
+    setAcceptedCandidates(updatedAccepted);
+  };
+
   return (
     <Container className="mt-4">
       <Navbar userType="hr" />
-      <Form.Group controlId="formJobTitle">
+      <Form.Group controlId="formJobTitle" style={{paddingBottom:"20px"}}>
         <Form.Label>Select Job Title</Form.Label>
         <Form.Control as="select" value={jobId} onChange={e => setJobId(e.target.value)}>
           <option value="">Select a Job Title</option>
@@ -231,15 +246,12 @@ const TechSelProcess = () => {
                       </Button>
                     </td>
                     <td>
-                      {isAccepted(candidate.id) ? (
-                        <Button variant="success" size="sm" onClick={() => handleToggleStatusClick(candidate)}>
-                          Accepted
-                        </Button>
-                      ) : (
-                        <Button variant="outline-success" size="sm" onClick={() => handleToggleStatusClick(candidate)}>
-                          Accept
-                        </Button>
-                      )}
+                      <Form.Check 
+                        type="checkbox" 
+                        checked={isAccepted(candidate.id)}
+                        onChange={() => handleToggleStatusClick(candidate)}
+                      />
+                      {isAccepted(candidate.id) && <span style={{ color: 'green', marginLeft: '8px' }}>Accepted</span>}
                     </td>
                   </tr>
                 ))
@@ -249,41 +261,34 @@ const TechSelProcess = () => {
         </Card.Body>
       </Card>
 
-      {/* Modal for setting interview dates */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Set Interview Dates</Modal.Title>
+          <Modal.Title>Set Interview Date</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group controlId="formTechnicalDate">
-            <Form.Label>Technical Assessment Date</Form.Label>
-            <br />
+          <Form.Group controlId="technicalInterviewDate">
+            <Form.Label>Technical Interview Date</Form.Label>
             <DatePicker
               selected={technicalInterviewDate}
               onChange={date => setTechnicalInterviewDate(date)}
               showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={30}
-              timeCaption="time"
-              dateFormat="MMMM d, yyyy h:mm aa"
+              dateFormat="Pp"
               className="form-control"
             />
           </Form.Group>
-          <Form.Group controlId="formPhysicalDate">
+          <Form.Group controlId="physicalInterviewDate">
             <Form.Label>Physical Interview Date</Form.Label>
-            <br />
             <DatePicker
               selected={physicalInterviewDate}
               onChange={date => setPhysicalInterviewDate(date)}
               showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={30}
-              timeCaption="time"
-              dateFormat="MMMM d, yyyy h:mm aa"
+              dateFormat="Pp"
               className="form-control"
             />
           </Form.Group>
-          {validationError && <p className="text-danger">{validationError}</p>}
+          {validationError && (
+            <div className="text-danger">{validationError}</div>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
@@ -295,19 +300,17 @@ const TechSelProcess = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Modal for toggling status */}
       <Modal show={statusModal} onHide={() => setStatusModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Toggle Status</Modal.Title>
+          <Modal.Title>Set Status</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group controlId="formStatusMessage">
+          <Form.Group controlId="statusMessage">
             <Form.Label>HR Message</Form.Label>
             <Form.Control
-              as="textarea"
-              rows={3}
+              type="text"
               value={statusMessage}
-              onChange={(e) => setStatusMessage(e.target.value)}
+              onChange={e => setStatusMessage(e.target.value)}
               placeholder="Enter a message (optional)"
             />
           </Form.Group>

@@ -32,9 +32,11 @@ const CVScreeningJF = () => {
   }, [selectedJobId]);
 
   const fetchJobs = async () => {
+    const userId = localStorage.getItem('userId');
     try {
-      const response = await axios.get('http://localhost:5266/api/JobForm/all-open-positions');
-      setJobs(response.data);
+      const response = await fetch(`http://localhost:5266/api/JobForm/OpenPos/${userId}`);
+      const data = await response.json();
+      setJobs(data);
     } catch (error) {
       console.error('Error fetching jobs:', error);
     }
@@ -80,7 +82,7 @@ const CVScreeningJF = () => {
 
   const handleSkillsSubmit = async () => {
     try {
-      const response = await axios.post('https://cv-screening.onrender.com/get-matched-cvs', { skills });
+      const response = await axios.post('https://cv-screening.onrender.com/match-cvs', { skills });
       console.log('Skills submitted successfully:', response.data);
       setShowSkillsModal(false);
       fetchMatchedCVs();
@@ -98,17 +100,18 @@ const CVScreeningJF = () => {
       const response = await axios.get('https://cv-screening.onrender.com/get-matched-cvs');
       const cvs = response.data;
       setMatchedCVs(cvs);
-
+  
       // Extract emails from the matched CVs
       const extractedEmails = cvs.map(cv => cv.contact_info.email);
       setEmails(extractedEmails);
-
+  
       // Send the emails to the PUT endpoint
       await updateScreenedEmails(extractedEmails);
     } catch (error) {
       console.error('Error fetching matched CVs:', error);
     }
   };
+  
 
   const updateScreenedEmails = async (emails) => {
     try {
@@ -311,23 +314,45 @@ const CVScreeningJF = () => {
             <Table striped bordered hover responsive>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Email</th>
+                <th>#</th>
+                <th>Candidate</th>
+                <th>CV</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Position</th>
                 </tr>
               </thead>
               <tbody>
-                {matchedCVs.map(cv => (
-                  <tr key={cv.cvId}>
-                    <td>{cv.cvName}</td>
+              {matchedCVs.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center">No CVs matched</td>
+                </tr>
+              ) : (
+                matchedCVs.map((cv, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>Candidate {index + 1}</td>
+                    <td>
+                      <a href={cv.file_path} target="_blank" rel="noopener noreferrer">Download CV</a>
+                    </td>
                     <td>{cv.contact_info.email}</td>
+                    <td>{cv.contact_info.phone_number}</td>
+                    <td>{cv.position}</td>
                   </tr>
-                ))}
+                ))
+              )}
               </tbody>
             </Table>
           ) : (
             <p>No matched CVs found.</p>
           )}
         </Card.Body>
+        <Card.Footer className="d-flex justify-content-end">
+          <Button variant="outline-success" onClick={handleExportToExcel}>
+            <FaFileExcel className="me-2" />
+            Export to Excel
+          </Button>
+        </Card.Footer>
       </Card>
     </div>
   );
