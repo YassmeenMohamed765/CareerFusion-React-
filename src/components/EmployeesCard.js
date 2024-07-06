@@ -24,11 +24,27 @@ const EmployeesCard = () => {
 
   const fetchEmployees = () => {
     const hrUserId = localStorage.getItem('userId');
-    axios.get(`http://localhost:5266/api/OpenPosCV/${hrUserId}/technical-interview-passed`)
-      .then(response => {
-        setEmployees(response.data);
+    
+    // Fetch employees from both endpoints simultaneously
+    const endpoint1 = axios.get(`http://localhost:5266/api/CVUpload/${hrUserId}/technical-interview-passed/all-posts`);
+    const endpoint2 = axios.get(`http://localhost:5266/api/OpenPosCV/${hrUserId}/technical-interview-passed`);
+
+    Promise.all([endpoint1, endpoint2])
+      .then((responses) => {
+        // responses[0] will be the response from the first endpoint
+        // responses[1] will be the response from the second endpoint
+        const employeesFromEndpoint1 = responses[0].data;
+        const employeesFromEndpoint2 = responses[1].data;
+
+        // Combine employees from both endpoints into one array
+        const combinedEmployees = [...employeesFromEndpoint1, ...employeesFromEndpoint2];
+
+        // Set the state with the combined array
+        setEmployees(combinedEmployees);
       })
-      .catch(error => console.error('Error fetching employees:', error));
+      .catch((error) => {
+        console.error('Error fetching employees:', error);
+      });
   };
 
   const fetchQuestions = (hrId) => {
@@ -228,12 +244,31 @@ const EmployeesCard = () => {
               </Button>
             </Modal.Footer>
           </Modal>
+
+          <Modal show={evaluationResult !== null} onHide={() => setEvaluationResult(null)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Evaluation Result</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {evaluationResult && (
+                <div>
+                  <p>Overall Score: {evaluationResult.overallScore}</p>
+                  <p>Status: {evaluationResult.status}</p>
+                </div>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setEvaluationResult(null)}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </>
       )}
 
       <Modal show={showReportModal} onHide={handleCloseReportModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Send Report to {selectedEmployee?.userFullName}</Modal.Title>
+          <Modal.Title>Send Report</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -265,23 +300,6 @@ const EmployeesCard = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {evaluationResult && (
-        <Modal show={!!evaluationResult} onHide={() => setEvaluationResult(null)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Evaluation Result</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p>Overall Score: {evaluationResult.overallScore}</p>
-            <p>Status: {evaluationResult.status}</p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setEvaluationResult(null)}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
     </Card>
   );
 };

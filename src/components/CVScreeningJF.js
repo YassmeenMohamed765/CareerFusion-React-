@@ -80,7 +80,7 @@ const CVScreeningJF = () => {
 
   const handleSkillsSubmit = async () => {
     try {
-      const response = await axios.post('https://cv-screening.onrender.com/get-matched-cvs', { skills });
+      const response = await axios.post('https://cv-screening.onrender.com/match-cvs', { skills });
       console.log('Skills submitted successfully:', response.data);
       setShowSkillsModal(false);
       fetchMatchedCVs();
@@ -98,17 +98,18 @@ const CVScreeningJF = () => {
       const response = await axios.get('https://cv-screening.onrender.com/get-matched-cvs');
       const cvs = response.data;
       setMatchedCVs(cvs);
-
+  
       // Extract emails from the matched CVs
       const extractedEmails = cvs.map(cv => cv.contact_info.email);
       setEmails(extractedEmails);
-
+  
       // Send the emails to the PUT endpoint
       await updateScreenedEmails(extractedEmails);
     } catch (error) {
       console.error('Error fetching matched CVs:', error);
     }
   };
+  
 
   const updateScreenedEmails = async (emails) => {
     try {

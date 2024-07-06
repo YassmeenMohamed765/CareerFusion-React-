@@ -195,7 +195,7 @@ const TechSelProcess = () => {
   return (
     <Container className="mt-4">
       <Navbar userType="hr" />
-      <Form.Group controlId="formJobTitle">
+      <Form.Group controlId="formJobTitle" style={{paddingBottom:"20px"}}>
         <Form.Label>Select Job Title</Form.Label>
         <Form.Control as="select" value={jobId} onChange={e => setJobId(e.target.value)}>
           <option value="">Select a Job Title</option>
