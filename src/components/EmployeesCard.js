@@ -76,7 +76,8 @@ const EmployeesCard = () => {
     const endpoint = `http://localhost:5266/api/Evaluations/${selectedEmployee.userId}/${hrId}/overallscore/${expectedScore}`;
     axios.get(endpoint)
       .then(response => {
-        const { overallScore, status } = response.data.userEvaluation;
+        const { overallScore } = response.data.userEvaluation;
+        const status = response.data.status;
         setEvaluationResult({ overallScore, status });
         setShowExpectedScoreModal(false);
         setExpectedScore('');
@@ -272,7 +273,7 @@ const EmployeesCard = () => {
           </Modal.Header>
           <Modal.Body>
             <p>Overall Score: {evaluationResult.overallScore}</p>
-            <p>Status: {evaluationResult.status ? 'Pass' : 'Fail'}</p>
+            <p>Status: {evaluationResult.status}</p>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setEvaluationResult(null)}>
