@@ -1,0 +1,19 @@
+.password-wrapper {
+    position: relative;
+  }
+  
+  .show-hide-password-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9em;
+    cursor: pointer;
+    color: #007bff;
+    z-index: 2;
+  }
+  

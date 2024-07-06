@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// import axios from 'axios';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import "./authentication.css";
-
+import "./AdminLogin.css";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -39,14 +38,28 @@ const AdminLogin = () => {
               </Form.Group>
               <Form.Group className="mb-4">
                 <Form.Label>Password</Form.Label>
-                <Form.Control size="lg" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <div className="password-wrapper">
+                  <Form.Control
+                    size="lg"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="show-hide-password-btn"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </Button>
+                </div>
               </Form.Group>
               <div className="d-flex justify-content-around align-items-center mb-4">
                 {/* <Form.Check type="checkbox" id="form1Example3" label="Remember me" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} /> */}
                 <Link to="/forgot-pass" className="text-decoration-none">Forgot password?</Link>
               </div>
               <Row>
-              <Button type="submit" variant="primary" className="btn-lg btn-block mb-4">Next</Button>
+                <Button type="submit" variant="primary" className="btn-lg btn-block mb-4">Next</Button>
               </Row>
             </Form>
           </Col>
