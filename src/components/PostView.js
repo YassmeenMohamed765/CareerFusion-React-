@@ -108,7 +108,7 @@ const PostView = ({ limit }) => {
       
       <div className="d-flex justify-content-between align-items-center mb-3" >
         <h3>Your Posts</h3>
-        <Button variant="primary" className="btn-block" style={{ marginRight: '25px' }} onClick={() => setShowModal(true)}>
+        <Button variant="primary" className="btn-block" style={{ marginRight: '5px' }} onClick={() => setShowModal(true)}>
           <FaPlus /> Write Post
         </Button>
       </div>
