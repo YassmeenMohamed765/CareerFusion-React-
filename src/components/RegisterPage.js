@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Alert, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
@@ -19,11 +20,19 @@ function RegisterPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [profile, setProfile] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
+
+    // Email validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setErrorMessage('Please enter a valid email address');
+      return;
+    }
 
     const registrationData = {
       UserName: userName,
@@ -151,7 +160,16 @@ function RegisterPage() {
               </Form.Group>
               <Form.Group className="mb-2">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <InputGroup>
+                  <Form.Control
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <InputGroup.Text onClick={() => setShowPassword(!showPassword)}>
+                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                  </InputGroup.Text>
+                </InputGroup>
               </Form.Group>
               <div className="checkbox-container mb-2">
                 {/* <Form.Check type="checkbox" checked={agreeTerms} onChange={() => setAgreeTerms(!agreeTerms)} label="By checking the box, you agree to our Terms and Conditions" /> */}
