@@ -78,41 +78,45 @@ const TechnicalInterview = () => {
       setValidationError('Both technical and physical interview dates are required.');
       return;
     }
-
+  
     if (!selectedCandidate) return;
-
+  
     try {
       const techDate = technicalInterviewDate ? new Date(technicalInterviewDate.getTime() - (technicalInterviewDate.getTimezoneOffset() * 60000)).toISOString() : null;
       const physDate = physicalInterviewDate ? new Date(physicalInterviewDate.getTime() - (physicalInterviewDate.getTimezoneOffset() * 60000)).toISOString() : null;
-
+  
+      console.log('Technical Interview Date:', techDate);
+      console.log('Physical Interview Date:', physDate);
+  
       await axios.put(`http://localhost:5266/api/CVUpload/${selectedCandidate.postCVId}/post/${postId}/set-technical-interview-date`, null, {
         params: {
           technicalAssessmentDate: techDate,
           physicalInterviewDate: physDate
         }
       });
-
+  
       const techResponse = await axios.get(`http://localhost:5266/api/CVUpload/${selectedCandidate.postCVId}/post/${postId}/get-technical-assessment-date`);
       const physicalResponse = await axios.get(`http://localhost:5266/api/CVUpload/${selectedCandidate.postCVId}/post/${postId}/get-physical-interview-date`);
-
+  
       setCandidates(prevCandidates =>
         prevCandidates.map(candidate =>
           candidate.postCVId === selectedCandidate.postCVId
             ? {
-              ...candidate,
-              technicalAssessmentDate: techResponse.data.data !== '0001-01-01T00:00:00' ? new Date(techResponse.data.data) : null,
-              physicalInterviewDate: physicalResponse.data.data !== '0001-01-01T00:00:00' ? new Date(physicalResponse.data.data) : null
-            }
+                ...candidate,
+                technicalAssessmentDate: techResponse.data.data !== '0001-01-01T00:00:00' ? new Date(techResponse.data.data) : null,
+                physicalInterviewDate: physicalResponse.data.data !== '0001-01-01T00:00:00' ? new Date(physicalResponse.data.data) : null
+              }
             : candidate
         )
       );
-
+  
       setShowModal(false);
       setSelectedCandidate(null);
     } catch (error) {
       console.error('Error setting interview date:', error);
     }
   };
+  
 
   const handleToggleStatusClick = (candidate) => {
     setStatusCandidate(candidate);

@@ -31,16 +31,24 @@ const EmployeesCard = () => {
 
     Promise.all([endpoint1, endpoint2])
       .then((responses) => {
-        // responses[0] will be the response from the first endpoint
-        // responses[1] will be the response from the second endpoint
         const employeesFromEndpoint1 = responses[0].data;
         const employeesFromEndpoint2 = responses[1].data;
 
         // Combine employees from both endpoints into one array
         const combinedEmployees = [...employeesFromEndpoint1, ...employeesFromEndpoint2];
 
-        // Set the state with the combined array
-        setEmployees(combinedEmployees);
+        // Remove duplicate emails
+        const uniqueEmployees = combinedEmployees.reduce((acc, current) => {
+          const x = acc.find(item => item.userEmail === current.userEmail);
+          if (!x) {
+            return acc.concat([current]);
+          } else {
+            return acc;
+          }
+        }, []);
+
+        // Set the state with the unique array
+        setEmployees(uniqueEmployees);
       })
       .catch((error) => {
         console.error('Error fetching employees:', error);
