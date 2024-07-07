@@ -15,6 +15,7 @@ function LoginPage ()  {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
  
 const handleLogin = async (e) => {
@@ -71,7 +72,21 @@ const handleLogin = async (e) => {
               {/* Password input */}
               <Form.Group className="mb-4">
                 <Form.Label>Password</Form.Label>
-                <Form.Control size='lg'  type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <div className="password-wrapper">
+                  <Form.Control
+                    size="lg"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="show-hide-password-btn"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </Button>
+                </div>
               </Form.Group>
               <Row>
               <div className="d-flex justify-content-around align-items-center mb-4">
