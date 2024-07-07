@@ -67,69 +67,69 @@ function RegisterPage() {
     }
   };
 
-  const login = useGoogleLogin({
-    onSuccess: (response) => handleGoogleSuccess(response),
-    onError: (error) => console.log('Login Failed:', error),
-  });
+  // const login = useGoogleLogin({
+  //   onSuccess: (response) => handleGoogleSuccess(response),
+  //   onError: (error) => console.log('Login Failed:', error),
+  // });
 
-  const handleGoogleSuccess = async (tokenResponse) => {
-    try {
-      const res = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenResponse.access_token}`, {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.access_token}`,
-          Accept: 'application/json',
-        },
-      });
-      const userData = res.data;
-      console.log('Google login successful:', userData);
+  // const handleGoogleSuccess = async (tokenResponse) => {
+  //   try {
+  //     const res = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenResponse.access_token}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${tokenResponse.access_token}`,
+  //         Accept: 'application/json',
+  //       },
+  //     });
+  //     const userData = res.data;
+  //     console.log('Google login successful:', userData);
 
-      const sanitizedUserName = sanitizeUsername(userData.name);
-      const generatedPassword = generatePassword();
+  //     const sanitizedUserName = sanitizeUsername(userData.name);
+  //     const generatedPassword = generatePassword();
 
-      const googleRegistrationData = {
-        UserName: sanitizedUserName,
-        FullName: userData.name,
-        Email: userData.email,
-        Password: generatedPassword,
-      };
+  //     const googleRegistrationData = {
+  //       UserName: sanitizedUserName,
+  //       FullName: userData.name,
+  //       Email: userData.email,
+  //       Password: generatedPassword,
+  //     };
 
-      const response = await fetch('http://localhost:5266/api/Auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(googleRegistrationData),
-      });
+  //     const response = await fetch('http://localhost:5266/api/Auth/register', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(googleRegistrationData),
+  //     });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Google Registration successful:', data);
-        localStorage.setItem('userId', data.userId);
-        setSuccessMessage('Google Registration successful');
-        alert('Google Registration successful');
-        navigate('/role');
-      } else {
-        setErrorMessage(await response.text());
-        console.error('Google Registration failed:', await response.text());
-      }
-    } catch (error) {
-      console.error('Error fetching Google user data:', error);
-    }
-  };
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log('Google Registration successful:', data);
+  //       localStorage.setItem('userId', data.userId);
+  //       setSuccessMessage('Google Registration successful');
+  //       alert('Google Registration successful');
+  //       navigate('/role');
+  //     } else {
+  //       setErrorMessage(await response.text());
+  //       console.error('Google Registration failed:', await response.text());
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching Google user data:', error);
+  //   }
+  // };
 
-  const sanitizeUsername = (username) => {
-    return username.replace(/[^a-zA-Z0-9]/g, '');
-  };
+  // const sanitizeUsername = (username) => {
+  //   return username.replace(/[^a-zA-Z0-9]/g, '');
+  // };
 
-  const generatePassword = () => {
-    const length = 12;
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
-    let password = "";
-    for (let i = 0, n = charset.length; i < length; ++i) {
-      password += charset.charAt(Math.floor(Math.random() * n));
-    }
-    return password;
-  };
+  // const generatePassword = () => {
+  //   const length = 12;
+  //   const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+  //   let password = "";
+  //   for (let i = 0, n = charset.length; i < length; ++i) {
+  //     password += charset.charAt(Math.floor(Math.random() * n));
+  //   }
+  //   return password;
+  // };
 
   return (
     <section className="vh-100">
