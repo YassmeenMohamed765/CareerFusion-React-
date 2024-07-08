@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import axios from 'axios';
 import Navbar from './Navbar';
+import AdminPostView from './AdminPostView';
 //import './AdminView.css';
 
 const AdminView = () => {
@@ -159,6 +160,7 @@ const AdminView = () => {
               </Card.Body>
             </Card>
           </Col>
+          <AdminPostView userId={userId}/>
         </Row>
       </Container>
     </div>
