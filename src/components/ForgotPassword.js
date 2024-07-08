@@ -11,9 +11,9 @@ const ForgotPassowrd = () => {
       e.preventDefault();
 
       try {
-        console.log('Request URL:', `/api/Auth/forgetpassword?email=${encodeURIComponent(email)}`);
+        console.log('Request URL:', `http://localhost:5266/api/Auth/forgetpassword?email=${encodeURIComponent(email)}`);
 
-    const response = await fetch(`/api/Auth/forgetpassword?email=${encodeURIComponent(email)}`, {
+    const response = await fetch(`http://localhost:5266/api/Auth/forgetpassword?email=${encodeURIComponent(email)}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
