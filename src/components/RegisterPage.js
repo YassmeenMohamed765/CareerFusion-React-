@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Alert, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
@@ -19,11 +20,19 @@ function RegisterPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [profile, setProfile] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
+
+    // Email validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setErrorMessage('Please enter a valid email address');
+      return;
+    }
 
     const registrationData = {
       UserName: userName,
@@ -58,69 +67,69 @@ function RegisterPage() {
     }
   };
 
-  const login = useGoogleLogin({
-    onSuccess: (response) => handleGoogleSuccess(response),
-    onError: (error) => console.log('Login Failed:', error),
-  });
+  // const login = useGoogleLogin({
+  //   onSuccess: (response) => handleGoogleSuccess(response),
+  //   onError: (error) => console.log('Login Failed:', error),
+  // });
 
-  const handleGoogleSuccess = async (tokenResponse) => {
-    try {
-      const res = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenResponse.access_token}`, {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.access_token}`,
-          Accept: 'application/json',
-        },
-      });
-      const userData = res.data;
-      console.log('Google login successful:', userData);
+  // const handleGoogleSuccess = async (tokenResponse) => {
+  //   try {
+  //     const res = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenResponse.access_token}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${tokenResponse.access_token}`,
+  //         Accept: 'application/json',
+  //       },
+  //     });
+  //     const userData = res.data;
+  //     console.log('Google login successful:', userData);
 
-      const sanitizedUserName = sanitizeUsername(userData.name);
-      const generatedPassword = generatePassword();
+  //     const sanitizedUserName = sanitizeUsername(userData.name);
+  //     const generatedPassword = generatePassword();
 
-      const googleRegistrationData = {
-        UserName: sanitizedUserName,
-        FullName: userData.name,
-        Email: userData.email,
-        Password: generatedPassword,
-      };
+  //     const googleRegistrationData = {
+  //       UserName: sanitizedUserName,
+  //       FullName: userData.name,
+  //       Email: userData.email,
+  //       Password: generatedPassword,
+  //     };
 
-      const response = await fetch('http://localhost:5266/api/Auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(googleRegistrationData),
-      });
+  //     const response = await fetch('http://localhost:5266/api/Auth/register', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(googleRegistrationData),
+  //     });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Google Registration successful:', data);
-        localStorage.setItem('userId', data.userId);
-        setSuccessMessage('Google Registration successful');
-        alert('Google Registration successful');
-        navigate('/role');
-      } else {
-        setErrorMessage(await response.text());
-        console.error('Google Registration failed:', await response.text());
-      }
-    } catch (error) {
-      console.error('Error fetching Google user data:', error);
-    }
-  };
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log('Google Registration successful:', data);
+  //       localStorage.setItem('userId', data.userId);
+  //       setSuccessMessage('Google Registration successful');
+  //       alert('Google Registration successful');
+  //       navigate('/role');
+  //     } else {
+  //       setErrorMessage(await response.text());
+  //       console.error('Google Registration failed:', await response.text());
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching Google user data:', error);
+  //   }
+  // };
 
-  const sanitizeUsername = (username) => {
-    return username.replace(/[^a-zA-Z0-9]/g, '');
-  };
+  // const sanitizeUsername = (username) => {
+  //   return username.replace(/[^a-zA-Z0-9]/g, '');
+  // };
 
-  const generatePassword = () => {
-    const length = 12;
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
-    let password = "";
-    for (let i = 0, n = charset.length; i < length; ++i) {
-      password += charset.charAt(Math.floor(Math.random() * n));
-    }
-    return password;
-  };
+  // const generatePassword = () => {
+  //   const length = 12;
+  //   const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+  //   let password = "";
+  //   for (let i = 0, n = charset.length; i < length; ++i) {
+  //     password += charset.charAt(Math.floor(Math.random() * n));
+  //   }
+  //   return password;
+  // };
 
   return (
     <section className="vh-100">
@@ -151,7 +160,16 @@ function RegisterPage() {
               </Form.Group>
               <Form.Group className="mb-2">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <InputGroup>
+                  <Form.Control
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <InputGroup.Text onClick={() => setShowPassword(!showPassword)}>
+                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                  </InputGroup.Text>
+                </InputGroup>
               </Form.Group>
               <div className="checkbox-container mb-2">
                 {/* <Form.Check type="checkbox" checked={agreeTerms} onChange={() => setAgreeTerms(!agreeTerms)} label="By checking the box, you agree to our Terms and Conditions" /> */}
