@@ -1,4 +1,8 @@
 this is the Demo:https://drive.google.com/file/d/1OxbcID9PJvttq4PFOLRjqYeD1bdJM5j0/view?usp=sharing
+this is the presentation:https://docs.google.com/presentation/d/1YxnMmSLMudLWPbDMknuvRRlAhISbbBzu/edit?usp=sharing&ouid=113636010958400738605&rtpof=true&sd=true
+----------
+CareerFusion is a recruitment platform that streamlines job applications for job seekers and optimizes recruitment for HR departments. It offers real-time updates, personalized career roadmaps, and automated tracking for job seekers, while providing advanced CV screening, interview management, and appraisal tools for HR. As the front-end developer, I focused on the HR side of the platform, developing user interfaces in React for CV screening, interview scheduling, and related HR functionalities, ensuring a smooth and efficient experience for corporate recruiters.
+----------
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
